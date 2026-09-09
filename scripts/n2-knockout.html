@@ -8,8 +8,8 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="n2-knockout — N2 Docs">
 <meta property="og:description" content="Setup and full config reference for n2-knockout, a FiveM melee knockout and downed system with skill-check recovery and impairment effects.">
-<meta property="og:image" content="https://n2docs.example/assets/logo.png">
-<meta property="og:url" content="https://n2docs.example/scripts/n2-knockout.html">
+<meta property="og:image" content="https://dustyrepo.github.io/Native2-Store-Documentations/assets/logo.png">
+<meta property="og:url" content="https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-knockout.html">
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="apple-touch-icon" href="../assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,6 +42,19 @@
 </div>
 <noscript><style>#skeleton{display:none}</style></noscript>
 
+<div id="search-overlay" class="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search documentation">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search-input" type="text" placeholder="Search config keys, commands, sections&hellip;" autocomplete="off" spellcheck="false">
+      <kbd>Esc</kbd>
+    </div>
+    <div id="search-results" class="search-results">
+      <p class="search-empty">Type to search config keys, commands, and sections across all four scripts.</p>
+    </div>
+  </div>
+</div>
+
 
 <header class="site-header">
   <a href="../index.html" class="brand">
@@ -49,7 +62,11 @@
     <span>N2 Docs<small>Native2 FiveM resources</small></span>
   </a>
   <div class="header-actions">
-    <span class="header-meta">n2-knockout</span>
+    <button id="search-trigger" class="search-trigger" type="button" aria-haspopup="dialog">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span class="label">Search docs&hellip;</span>
+      <kbd>/</kbd>
+    </button>
     <button class="menu-toggle" aria-label="Toggle navigation">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -76,12 +93,13 @@
   </aside>
 
   <div class="content">
+    <div class="content-row">
     <article>
       <p class="eyebrow">Script</p>
       <h1>n2-knockout</h1>
       <p class="lede">Melee knockout and downed system. Enough unarmed hits within a rolling window ragdolls the victim to the ground, invincible and screen-blacked, until they recover with a skill check and walk away impaired, then headachy. Bridges ESX, QBCore, and QBX automatically and can announce stand-ups into n2-chat.</p>
 
-      <h2>Dependencies</h2>
+      <h2 id="dependencies">Dependencies</h2>
       <ul>
         <li><code>fx_version 'cerulean'</code>, <code>game 'gta5'</code>, <code>lua54 'yes'</code></li>
         <li><strong><code>ox_lib</code></strong> - hard dependency (<code>lib.notify</code>, <code>lib.skillCheck</code>).</li>
@@ -89,7 +107,7 @@
         <li><strong>n2-chat</strong> - optional soft integration. Used only if <code>Config.ChatIntegration.Enabled</code> is true and n2-chat is started; calls its <code>GetDisplayName</code> and <code>SendInRange</code>/<code>ShowActionBubble</code> exports.</li>
       </ul>
 
-      <h2>Installation</h2>
+      <h2 id="installation">Installation</h2>
       <ol>
         <li>Drop the <code>n2-knockout</code> folder into your resources directory.</li>
         <li>Make sure <code>ox_lib</code> is installed.</li>
@@ -98,7 +116,7 @@
         <li>Edit <code>config.lua</code> to taste. The framework bridge self-detects - nothing to select manually.</li>
       </ol>
 
-      <h2>Configuration</h2>
+      <h2 id="configuration">Configuration</h2>
       <p>All keys live under the global <code>Config</code> table in <code>config.lua</code>.</p>
       <table class="config-table">
         <thead><tr><th>Key</th><th>Default</th><th>Controls</th></tr></thead>
@@ -133,13 +151,13 @@
         </tbody>
       </table>
 
-      <h2>Commands</h2>
+      <h2 id="commands">Commands</h2>
       <div class="cmd-list">
         <div class="cmd-item"><code>/n2_standup</code><span>Client. Bound to <kbd>E</kbd> by default via <code>RegisterKeyMapping</code>. Attempts to stand up when knocked out, running the configured skill check unless <code>SkillCheck.Enabled</code> is false.</span></div>
         <div class="cmd-item"><code>/n2ko</code><span>Server. Force-knocks-out the calling player. Only works with <code>Config.Debug = true</code>; otherwise the player gets an error notification. Must be run by a player, not the server console.</span></div>
       </div>
 
-      <h2>Exports / Events</h2>
+      <h2 id="exports-events">Exports / Events</h2>
       <p>No exports of its own - it only calls into n2-chat's. Net events:</p>
       <ul>
         <li><code>n2-knockout:client:setKnockedOut</code> - server → client, enters the knockout state.</li>
@@ -150,19 +168,41 @@
       </ul>
       <p>Also hooks <code>gameEventTriggered</code> (client, to detect unarmed hits), <code>onResourceStop</code> (client, cleans up effects/ragdoll if the resource stops mid-knockout), and <code>playerDropped</code> (server, clears downed state on disconnect).</p>
 
-      <h2>NUI &amp; locale</h2>
+      <h2 id="nui-locale">NUI &amp; locale</h2>
       <p><code>html/index.html</code> is a transparent, non-interactive background page whose only job is audio playback - <code>client/sounds.lua</code> sends one-way <code>playSound</code>/<code>stopSound</code> messages, no callbacks. <code>locales/en.lua</code> holds 5 short player-facing strings; only English ships.</p>
 
-      <h2>Notes</h2>
+      <h2 id="notes">Notes</h2>
       <div class="callout">Bridge load order is <code>qbx.lua</code> → <code>qbcore.lua</code> → <code>esx.lua</code>, each guarding against overriding an already-set framework - if multiple framework resources are somehow started, QBX wins.</div>
       <div class="callout">Melee chip damage is actively healed back every frame outside the counted-hit flow (including a last-resort resurrect-on-death safety net). Running another damage/medical system alongside unarmed-hit handling could conflict with this.</div>
       <div class="callout warn"><strong>Leave <code>Config.Debug</code> off in production</strong> - besides logging, it unlocks <code>/n2ko</code>, a self-knockout command available to every player.</div>
 
       <footer>Source: <code>[Native2]/n2-knockout/</code> (fxmanifest.lua, config.lua, client/, server/, bridge/, shared/bridge.lua, locales/en.lua).</footer>
     </article>
+    <aside class="toc">
+      <h3>On this page</h3>
+      <ul>
+        <li><a href="#dependencies">Dependencies</a>
+        </li>
+        <li><a href="#installation">Installation</a>
+        </li>
+        <li><a href="#configuration">Configuration</a>
+        </li>
+        <li><a href="#commands">Commands</a>
+        </li>
+        <li><a href="#exports-events">Exports / Events</a>
+        </li>
+        <li><a href="#nui-locale">NUI &amp; locale</a>
+        </li>
+        <li><a href="#notes">Notes</a>
+        </li>
+      </ul>
+    </aside>
+    </div>
   </div>
 </div>
 
+<script src="../js/search-index.js"></script>
+<script src="../js/search.js"></script>
 <script src="../js/site.js"></script>
 </body>
 </html>

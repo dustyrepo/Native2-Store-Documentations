@@ -8,8 +8,8 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="n2-laptop — N2 Docs">
 <meta property="og:description" content="Setup and full config reference for n2-laptop, a FiveM placeable laptop item with banking, crypto, mail, marketplaces, and USB apps.">
-<meta property="og:image" content="https://n2docs.example/assets/logo.png">
-<meta property="og:url" content="https://n2docs.example/scripts/n2-laptop.html">
+<meta property="og:image" content="https://dustyrepo.github.io/Native2-Store-Documentations/assets/logo.png">
+<meta property="og:url" content="https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-laptop.html">
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="apple-touch-icon" href="../assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,6 +42,19 @@
 </div>
 <noscript><style>#skeleton{display:none}</style></noscript>
 
+<div id="search-overlay" class="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search documentation">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search-input" type="text" placeholder="Search config keys, commands, sections&hellip;" autocomplete="off" spellcheck="false">
+      <kbd>Esc</kbd>
+    </div>
+    <div id="search-results" class="search-results">
+      <p class="search-empty">Type to search config keys, commands, and sections across all four scripts.</p>
+    </div>
+  </div>
+</div>
+
 
 <header class="site-header">
   <a href="../index.html" class="brand">
@@ -49,7 +62,11 @@
     <span>N2 Docs<small>Native2 FiveM resources</small></span>
   </a>
   <div class="header-actions">
-    <span class="header-meta">n2-laptop</span>
+    <button id="search-trigger" class="search-trigger" type="button" aria-haspopup="dialog">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span class="label">Search docs&hellip;</span>
+      <kbd>/</kbd>
+    </button>
     <button class="menu-toggle" aria-label="Toggle navigation">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -76,12 +93,13 @@
   </aside>
 
   <div class="content">
+    <div class="content-row">
     <article>
       <p class="eyebrow">Script</p>
       <h1>n2-laptop</h1>
       <p class="lede">A placeable laptop item with a full desktop UI: a browser, banking, a fake crypto exchange, mail (including scam templates), two black-market storefronts, peer-to-peer resale, USB file storage, and a private messaging system that also carries in-app NPC conversations.</p>
 
-      <h2>Dependencies</h2>
+      <h2 id="dependencies">Dependencies</h2>
       <ul>
         <li><code>fx_version 'cerulean'</code>, <code>game 'gta5'</code>, <code>lua54 'yes'</code></li>
         <li><strong>Hard dependencies:</strong> <code>ox_lib</code>, <code>ox_target</code>, <code>ox_inventory</code>, <code>oxmysql</code>.</li>
@@ -89,7 +107,7 @@
         <li><code>escrow_ignore { 'config/*.lua' }</code>.</li>
       </ul>
 
-      <h2>Installation</h2>
+      <h2 id="installation">Installation</h2>
       <ol>
         <li>Copy the folder to <code>resources/[Native2]/n2-laptop</code>.</li>
         <li>Import <code>n2-laptop.sql</code> - every statement is <code>CREATE TABLE IF NOT EXISTS</code>, safe to re-run.</li>
@@ -99,7 +117,7 @@
       </ol>
       <div class="callout warn"><strong>Item name mismatch:</strong> <code>installation.txt</code> tells you to add an item named <code>usb_stick</code>, but <code>Config.Laptop.usb.item</code> in <code>config.lua</code> defaults to <code>'usb_device'</code>. Pick one name and make sure the item and the config key match, or USB features silently won't work.</div>
 
-      <h3>Database</h3>
+      <h3 id="database">Database</h3>
       <table class="config-table">
         <thead><tr><th>Feature</th><th>Tables created</th></tr></thead>
         <tbody>
@@ -111,8 +129,8 @@
       </table>
       <p>Everything else (placement/ownership, settings, VPN state, bookmarks, notifications, recycle bin, Spotify state) lives in the laptop item's <code>ox_inventory</code> metadata - no extra tables needed. Two manual <code>ALTER TABLE</code> statements ship as comments in <code>n2-laptop.sql</code> for upgrading an existing install (add <code>haocang_tip_sent</code> to <code>n2_sell_reputation</code>; widen the <code>status</code> enum and add <code>robbery_expires_at</code> to <code>n2_sell_listings</code>) - <code>CREATE TABLE IF NOT EXISTS</code> won't apply schema changes to a table that already exists.</p>
 
-      <h2>Configuration</h2>
-      <h3>config/config.lua</h3>
+      <h2 id="configuration">Configuration</h2>
+      <h3 id="config-config-lua">config/config.lua</h3>
       <table class="config-table">
         <tbody>
           <tr><td><code>Config.Laptop</code></td><td><code>item</code> (<code>'laptop'</code>), <code>prop</code> (<code>prop_laptop_01a</code>), <code>openDistance</code> (1.5), <code>openControl</code> (38 = E), <code>autoLockMinutes</code> (10, 0 disables). Sub-tables: <code>usb.item</code> (<code>'usb_device'</code>, see mismatch warning above), <code>usb.maxFiles</code> (40); <code>hack.item</code> (<code>'laptop_hack_device'</code>), <code>hack.difficulty</code> (default <code>easy, easy, medium</code>), <code>hack.failCooldownMinutes</code> (3).</td></tr>
@@ -128,39 +146,39 @@
         </tbody>
       </table>
 
-      <h3>config/marketplaces.lua</h3>
+      <h3 id="config-marketplaces-lua">config/marketplaces.lua</h3>
       <p><code>Config.Marketplaces</code>, keyed by id (<code>wishbay</code>, <code>haocang</code>), each with a <code>currency</code>, an accent theme, optional full-UI localization strings (HaoCang ships a complete Chinese set), and a <code>vendors[]</code> list. Each vendor has <code>id, name, rating, reviews, badge?, since, products[]</code>; each product has <code>id, name, price, sold, category, color, item, realValue</code>. The catalog is large by design: 200+ products across 3 WishBay vendors (rating 2.1-4.8) plus 1 HaoCang vendor (4.9), all using invented in-universe brand names, not real trademarks.</p>
 
-      <h2>Apps</h2>
+      <h2 id="apps">Apps</h2>
 
-      <h3>Bank (IonBank)</h3>
+      <h3 id="app-bank">Bank (IonBank)</h3>
       <p>Real bank balance from the framework, plus a genuine transaction ledger in <code>n2_bank_transactions</code>, written only through <code>server/bank.lua</code>'s charge/deposit wrappers - never touched directly by Market, Sell, or Cryptex. One callback returns balance plus the last 50 transactions; charges elsewhere push a live notification to an open laptop.</p>
 
-      <h3>Cryptex</h3>
+      <h3 id="app-cryptex">Cryptex</h3>
       <p>A fake cryptocurrency ("Cryptex Coin" / CTX) with one server-wide price that drifts every 5 minutes (±8% normal move, 5% chance of a larger crash), clamped $5-$500 and persisted via KVP so it survives restarts. Holdings are per-laptop, not per-player. Selling to bank takes a 10% launder fee; selling to cash doesn't.</p>
 
-      <h3>Mail</h3>
+      <h3 id="app-mail">Mail</h3>
       <p>Phishing-style scam emails deliver probabilistically (35% chance per laptop open, minimum 10 minutes apart) from <code>Config.Mail.templates</code>. Each scam email's "Pay" button genuinely charges the laptop's bank and delivers nothing back - that's the intended trap, not a bug.</p>
 
-      <h3>Market (WishBay / HaoCang)</h3>
+      <h3 id="app-market">Market (WishBay / HaoCang)</h3>
       <p>Browses the <code>Config.Marketplaces</code> catalogs. Checkout revalidates price and vendor server-side (never trusts the client), converts non-USD prices via a hardcoded rate table, charges the bank plus a shipping fee, and creates a <code>pending</code> order that flips to <code>ready</code> after the configured delivery time, with the vendor DMing the buyer over Whispr. Orders are collected later at a physical pickup depot - the laptop doesn't need to be open for that.</p>
 
-      <h3>Placement</h3>
+      <h3 id="app-placement">Placement</h3>
       <p>Client-side ghost-prop placement: raycast from the camera, scroll/arrow keys for reach/height/rotation, <kbd>E</kbd> to confirm, <kbd>Backspace</kbd> to cancel. The server validates, removes the item, spawns a networked prop, and tracks it in memory by net ID. If the resource stops, every placed laptop is handed back to its owner if online, or queued and returned on their next login.</p>
 
-      <h3>Sell (SellHub)</h3>
+      <h3 id="app-sell">Sell (SellHub)</h3>
       <p>Lists a carried clothing item (it stays in the seller's inventory, just tagged) at a player-set price. A synthetic NPC buyer opens negotiation via a real Whispr DM thread, up to <code>maxRounds</code> back-and-forth. On acceptance, a meetup is scheduled at a random location; the physical handover has a 20%-default chance the buyer just grabs the item and flees, starting a chase the player has to subdue and search within a recovery window. Reputation only moves on a completed high-quality sale or a declined/expired/unrecovered negotiation; hitting 20 reputation triggers a one-time Whispr tip pointing toward HaoCang.</p>
 
-      <h3>USB</h3>
+      <h3 id="app-usb">USB</h3>
       <p>Per-item file storage - a USB stick's files live in its own <code>ox_inventory</code> metadata, so handing the stick to someone else (or plugging it into a different laptop) carries the same files with it. Capped at <code>Config.Laptop.usb.maxFiles</code> (40). The hacking/lock-bypass minigame itself lives in <code>client/main.lua</code>, not here.</p>
 
-      <h3>Whispr</h3>
+      <h3 id="app-whispr">Whispr</h3>
       <p>Private messaging scoped to the laptop item, not the player - a replacement laptop starts with a blank Whispr. Supports DMs, groups with invites, read-only admin broadcast channels, folders, and unread counts. Synthetic identities (<code>vendor:&lt;marketplace&gt;:&lt;id&gt;</code>, <code>buyer:listing:&lt;id&gt;</code>) let Market and SellHub route their in-character messages through real Whispr conversations. Live delivery only reaches a laptop that's currently open with that conversation; otherwise it's unread on next open.</p>
 
-      <h2>Commands</h2>
+      <h2 id="commands">Commands</h2>
       <p>None. Every interaction goes through <code>ox_target</code> options (the shop, the laptop prop, the pickup depot, SellHub meetup peds) and NUI callbacks - no <code>RegisterCommand</code> calls exist anywhere in this resource.</p>
 
-      <h2>Exports / Events</h2>
+      <h2 id="exports-events">Exports / Events</h2>
       <div class="cmd-list">
         <div class="cmd-item"><code>n2-laptop.useLaptop</code><span>Client. Starts the placement flow for a carried laptop item (also wired as the item's own client export in <code>ox_inventory</code>).</span></div>
         <div class="cmd-item"><code>n2-laptop.GetLaptopHistory</code><span>Server. <code>(source, laptopId, netId?)</code> - reads a laptop's stored browser history, e.g. for a "seized laptop" mechanic elsewhere. No permission gating - the caller has to do that itself.</span></div>
@@ -170,7 +188,7 @@
       <p><strong>Key client events:</strong> <code>n2-laptop:client:notify</code>, <code>:removeObject</code>, <code>n2-laptop:whispr:push</code>, <code>:added</code>, <code>:conversationDeleted</code>.</p>
       <p>Beyond that, nearly every NUI action has its own <code>ox_lib</code> callback (<code>n2-bank:*</code>, <code>n2-cryptex:*</code>, <code>n2-mail:*</code>, <code>n2-market:*</code>, <code>n2-sell:*</code>, <code>n2-usb:*</code>, <code>n2-whispr:*</code>, plus placement/passcode/hack callbacks) - too many to list individually here.</p>
 
-      <h2>Notes</h2>
+      <h2 id="notes">Notes</h2>
       <div class="callout warn"><strong>Everything is scoped to the physical laptop item</strong>, not the player. Losing, selling, or having it stolen loses Whispr history, SellHub listings/reputation, and marketplace orders tied to it - and whoever ends up with it inherits none of the previous owner's data. Deliberate design, but worth telling players.</div>
       <div class="callout">Money handling differs by framework: ESX keeps bank/cash in named accounts, QBCore/QBX use <code>PlayerData.money</code>. <code>server/framework.lua</code> abstracts this - any custom money logic added later needs to follow the same branch.</div>
       <div class="callout">The hacking minigame's pass/fail result is entirely client-trusted; the server only enforces item consumption and a per-laptop cooldown after a failure, so it can't be reduced to "buy enough devices and spam it," but it also isn't server-verified.</div>
@@ -178,9 +196,48 @@
 
       <footer>Source: <code>[Native2]/n2-laptop/</code> (installation.txt, fxmanifest.lua, config/, client/, server/, n2-laptop.sql).</footer>
     </article>
+    <aside class="toc">
+      <h3>On this page</h3>
+      <ul>
+        <li><a href="#dependencies">Dependencies</a>
+        </li>
+        <li><a href="#installation">Installation</a>
+          <ul>
+            <li><a href="#database">Database</a></li>
+          </ul>
+        </li>
+        <li><a href="#configuration">Configuration</a>
+          <ul>
+            <li><a href="#config-config-lua">config/config.lua</a></li>
+            <li><a href="#config-marketplaces-lua">config/marketplaces.lua</a></li>
+          </ul>
+        </li>
+        <li><a href="#apps">Apps</a>
+          <ul>
+            <li><a href="#app-bank">Bank</a></li>
+            <li><a href="#app-cryptex">Cryptex</a></li>
+            <li><a href="#app-mail">Mail</a></li>
+            <li><a href="#app-market">Market</a></li>
+            <li><a href="#app-placement">Placement</a></li>
+            <li><a href="#app-sell">Sell</a></li>
+            <li><a href="#app-usb">USB</a></li>
+            <li><a href="#app-whispr">Whispr</a></li>
+          </ul>
+        </li>
+        <li><a href="#commands">Commands</a>
+        </li>
+        <li><a href="#exports-events">Exports / Events</a>
+        </li>
+        <li><a href="#notes">Notes</a>
+        </li>
+      </ul>
+    </aside>
+    </div>
   </div>
 </div>
 
+<script src="../js/search-index.js"></script>
+<script src="../js/search.js"></script>
 <script src="../js/site.js"></script>
 </body>
 </html>

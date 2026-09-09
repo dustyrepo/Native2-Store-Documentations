@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://n2docs.example/</loc>
+    <loc>https://dustyrepo.github.io/Native2-Store-Documentations/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://n2docs.example/scripts/n2-recoil.html</loc>
+    <loc>https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-recoil.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://n2docs.example/scripts/n2-knockout.html</loc>
+    <loc>https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-knockout.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://n2docs.example/scripts/n2-chat.html</loc>
+    <loc>https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-chat.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://n2docs.example/scripts/n2-laptop.html</loc>
+    <loc>https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-laptop.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

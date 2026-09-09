@@ -4,11 +4,11 @@
 
 ## Scripts
 
-- [n2-recoil](https://n2docs.example/scripts/n2-recoil.html): Client-only weapon recoil script. Per-weapon-category vertical/horizontal recoil, job-based multipliers via ESX/QBCore/QBX, aim-down-sights dampening, and free-aim camera sway. No dependencies.
-- [n2-knockout](https://n2docs.example/scripts/n2-knockout.html): Melee knockout and downed system. Rolling hit-count threshold, skill-check recovery via ox_lib, impairment effects (blur, drunk walk, slowed movement), and a post-recovery headache. Auto-bridges ESX/QBCore/QBX; optional n2-chat integration.
-- [n2-chat](https://n2docs.example/scripts/n2-chat.html): Standalone chat replacement. Proximity text, roleplay commands (/me, /do, /b, /ooc, /w, /s, /pm, and more), persistent world-placed scene markers, per-player languages, moderation (flood protection, word filter, Discord webhooks), and a phone-call relay. Requires oxmysql.
-- [n2-laptop](https://n2docs.example/scripts/n2-laptop.html): Placeable laptop item with a full desktop UI: IonBank (real bank balance + ledger), Cryptex (fake volatile cryptocurrency), Mail (including scam templates), WishBay/HaoCang marketplaces, SellHub peer-to-peer resale with NPC negotiation, USB file storage, and Whispr private messaging. Requires ox_lib, ox_target, ox_inventory, oxmysql.
+- [n2-recoil](https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-recoil.html): Client-only weapon recoil script. Per-weapon-category vertical/horizontal recoil, job-based multipliers via ESX/QBCore/QBX, aim-down-sights dampening, and free-aim camera sway. No dependencies.
+- [n2-knockout](https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-knockout.html): Melee knockout and downed system. Rolling hit-count threshold, skill-check recovery via ox_lib, impairment effects (blur, drunk walk, slowed movement), and a post-recovery headache. Auto-bridges ESX/QBCore/QBX; optional n2-chat integration.
+- [n2-chat](https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-chat.html): Standalone chat replacement. Proximity text, roleplay commands (/me, /do, /b, /ooc, /w, /s, /pm, and more), persistent world-placed scene markers, per-player languages, moderation (flood protection, word filter, Discord webhooks), and a phone-call relay. Requires oxmysql.
+- [n2-laptop](https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-laptop.html): Placeable laptop item with a full desktop UI: IonBank (real bank balance + ledger), Cryptex (fake volatile cryptocurrency), Mail (including scam templates), WishBay/HaoCang marketplaces, SellHub peer-to-peer resale with NPC negotiation, USB file storage, and Whispr private messaging. Requires ox_lib, ox_target, ox_inventory, oxmysql.
 
 ## Optional
 
-- [Home](https://n2docs.example/): Overview and script index.
+- [Home](https://dustyrepo.github.io/Native2-Store-Documentations/): Overview and script index.
