@@ -6,7 +6,13 @@
   var resultsEl = document.getElementById("search-results");
   if (!trigger || !overlay || !input || !resultsEl) return;
 
-  var basePrefix = location.pathname.indexOf("/scripts/") !== -1 ? "../" : "";
+  // A <base> tag (only on 404.html, pinned to the site root so its relative
+  // asset links survive being served for an arbitrary broken URL) already
+  // resolves everything - don't also sniff location.pathname for depth,
+  // which would misfire if the broken URL itself contains "/scripts/".
+  var basePrefix = document.querySelector("base")
+    ? ""
+    : location.pathname.indexOf("/scripts/") !== -1 ? "../" : "";
   var currentResults = [];
   var activeIndex = -1;
 
