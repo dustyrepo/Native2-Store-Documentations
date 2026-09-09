@@ -1,7 +1,14 @@
 /* N2 Docs - design tokens & shared layout
    Palette: dark-mode developer docs. Off-black slate background, single
    emerald accent (locked across every page and script), JetBrains Mono for
-   code/labels, IBM Plex Sans for reading text. */
+   code/labels, IBM Plex Sans for reading text.
+
+   CACHE-BUSTING: every <link>/<script> tag that loads this file (and
+   js/site.js, js/search.js, js/search-index.js) across all 6 HTML pages
+   appends "?v=N". GitHub Pages sets a 10-minute Cache-Control on static
+   assets, so without this, a viewer who loaded the page recently can see
+   a stale CSS/JS file for up to 10 minutes after a push - bump N in all
+   six pages whenever you edit this file or any js/*.js file. */
 
 :root {
   --bg: #0f172a;
