@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>n2-chat · N2 Docs</title>
+<meta name="description" content="Setup and full config reference for n2-chat, a standalone FiveM chat replacement with RP commands, scene markers, and moderation tools.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="n2-chat — N2 Docs">
+<meta property="og:description" content="Setup and full config reference for n2-chat, a standalone FiveM chat replacement with RP commands, scene markers, and moderation tools.">
+<meta property="og:image" content="https://n2docs.example/assets/logo.png">
+<meta property="og:url" content="https://n2docs.example/scripts/n2-chat.html">
+<link rel="icon" type="image/png" href="../assets/logo.png">
+<link rel="apple-touch-icon" href="../assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div id="skeleton" class="skeleton" aria-hidden="true">
+  <div class="sk-header"><div class="sk-bar w-30" style="max-width:120px"></div></div>
+  <div class="sk-layout">
+    <div class="sk-sidebar">
+      <div class="sk-bar label w-45"></div>
+      <div class="sk-bar w-80"></div>
+      <div class="sk-bar label w-45"></div>
+      <div class="sk-bar w-90"></div>
+      <div class="sk-bar w-90"></div>
+      <div class="sk-bar w-90"></div>
+      <div class="sk-bar w-90"></div>
+    </div>
+    <div class="sk-content">
+      <div class="sk-bar label w-30"></div>
+      <div class="sk-bar h-lg w-60"></div>
+      <div class="sk-bar w-90"></div>
+      <div class="sk-bar w-80"></div>
+      <div class="sk-block"></div>
+      <div class="sk-block"></div>
+    </div>
+  </div>
+</div>
+<noscript><style>#skeleton{display:none}</style></noscript>
+
+
+<header class="site-header">
+  <a href="../index.html" class="brand">
+    <img class="brand-mark" src="../assets/logo.png" alt="N2 Docs logo">
+    <span>N2 Docs<small>Native2 FiveM resources</small></span>
+  </a>
+  <div class="header-actions">
+    <span class="header-meta">n2-chat</span>
+    <button class="menu-toggle" aria-label="Toggle navigation">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <nav class="nav-group">
+      <h3>Overview</h3>
+      <ul>
+        <li><a href="../index.html"><span class="nav-dot"></span>Home</a></li>
+      </ul>
+    </nav>
+    <nav class="nav-group">
+      <h3>Scripts</h3>
+      <ul>
+        <li><a href="n2-recoil.html"><span class="nav-dot"></span>n2-recoil</a></li>
+        <li><a href="n2-knockout.html"><span class="nav-dot"></span>n2-knockout</a></li>
+        <li><a href="n2-chat.html" class="active"><span class="nav-dot"></span>n2-chat</a></li>
+        <li><a href="n2-laptop.html"><span class="nav-dot"></span>n2-laptop</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <article>
+      <p class="eyebrow">Script</p>
+      <h1>n2-chat</h1>
+      <p class="lede">A standalone, SA-MP-style chat replacement: floating proximity text, a full set of RP commands, persistent world-placed roleplay notes, per-player languages, moderation, and a phone-call relay. Ships its own NUI and a <code>RegisterCommand</code>/export API other resources hook into.</p>
+
+      <div class="callout">This resource ships an unusually complete <code>README.md</code> in its own folder - treat this page as the fast-reference version and the README as the exhaustive one (it includes the full 30+ command table and troubleshooting guide verbatim).</div>
+
+      <h2>Dependencies</h2>
+      <ul>
+        <li><code>fx_version 'cerulean'</code>, <code>game 'gta5'</code>, <code>lua54 'yes'</code></li>
+        <li><strong><code>oxmysql</code></strong> - hard dependency, required even if Scene Markers are disabled in config (it's declared at the manifest level). Used to persist the <code>n2_chat_scenes</code> table, created automatically.</li>
+        <li>Optional, config-driven only (not manifest dependencies): ESX / QBCore / ox_core for display names, an emote resource as fallback, and lb-phone / qb-phone / qs-smartphone for the call relay.</li>
+      </ul>
+
+      <h2>Installation</h2>
+      <ol>
+        <li>Copy the <code>n2-chat</code> folder into <code>resources/</code>.</li>
+        <li>Make sure <code>oxmysql</code> is installed and <code>ensure</code>d <strong>before</strong> n2-chat in <code>server.cfg</code>.</li>
+        <li>Add <code>ensure n2-chat</code>.</li>
+        <li>Restart the server, or <code>refresh</code> + <code>ensure n2-chat</code> from console.</li>
+        <li>No manual database migration - <code>n2_chat_scenes</code> is created on first start.</li>
+      </ol>
+
+      <h2>Configuration</h2>
+      <p>Every config file shares one global <code>Config</code> table (<code>Config = Config or {}</code>) - the split into files is purely organizational. <code>general.lua</code> must load before <code>weapons.lua</code>, which fxmanifest already gets right; don't reorder <code>shared_scripts</code>.</p>
+
+      <h3>general.lua - framework, keys, ranges, core behavior</h3>
+      <table class="config-table">
+        <tbody>
+          <tr><td><code>Config.Framework</code></td><td><code>'none'</code> / <code>'esx'</code> / <code>'qbcore'</code> / <code>'ox'</code> - only affects the displayed name.</td></tr>
+          <tr><td><code>Config.FrameworkResource</code></td><td>Override the resource name the framework is exported from.</td></tr>
+          <tr><td><code>Config.CurrencySymbol</code></td><td>Default <code>'$'</code>, used by <code>/cash</code>.</td></tr>
+          <tr><td><code>Config.ChatKey</code></td><td>Default <code>'T'</code> - rebindable under FiveM keybinds.</td></tr>
+          <tr><td><code>Config.FreeLookKey</code></td><td>Default <code>'LMENU'</code> (left Alt) - rebindable.</td></tr>
+          <tr><td><code>Config.ChatRange</code>, <code>Config.Ranges</code></td><td>Default proximity range, plus per-type ranges (normal, whisper, shout, me, do, b, low, long).</td></tr>
+          <tr><td><code>Config.MaxMessages</code> / <code>MaxInputHistory</code> / <code>MaxMessageLength</code></td><td>History buffer size, arrow-key recall depth, per-message character cap.</td></tr>
+          <tr><td><code>Config.FloodProtection</code></td><td><code>{ enabled, maxMessages, interval, muteDuration }</code></td></tr>
+          <tr><td><code>Config.AdminPermission</code></td><td>Default ACE <code>'n2-chat.admin'</code>, plus <code>DefaultMuteDuration</code>, <code>AdminChatTag</code>, and optional framework permission-group gating.</td></tr>
+          <tr><td><code>Config.Languages</code></td><td><code>{ enabled, list, default, autoDetectFromFramework, nationalityMap }</code></td></tr>
+          <tr><td><code>Config.Emotes</code></td><td><code>{ enabled, fallbackToNativeCommand, fallbackCommandName, announceInChat, list }</code></td></tr>
+          <tr><td><code>Config.GrammarCorrection</code></td><td><code>{ enabled, capitalizeFirst, capitalizeStandaloneI, endPunctuation, defaultPunctuation }</code></td></tr>
+          <tr><td><code>Config.Commands</code></td><td>Per-command enable/disable table.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>appearance.lua - visuals</h3>
+      <table class="config-table">
+        <tbody>
+          <tr><td><code>Config.EnableFade</code> / <code>FadeTime</code> / <code>FadeDuration</code></td><td>Message fade-out behavior.</td></tr>
+          <tr><td><code>Config.Position</code>, <code>Width</code>, <code>Height</code>, <code>FontSize</code>, <code>LineHeight</code>, <code>FontFamily</code></td><td>Chat window geometry and type.</td></tr>
+          <tr><td><code>Config.Colors</code>, <code>ColorLabels</code>, <code>ColorOrder</code></td><td>Default hex per message type, plus labels/ordering.</td></tr>
+          <tr><td><code>Config.Timestamps.format</code></td><td>One of <code>24h</code> / <code>12h</code> / <code>24h-sec</code> / <code>12h-sec</code>.</td></tr>
+          <tr><td><code>Config.MenuAccentColor</code></td><td>Single hex re-theming <code>/chatsettings</code> and the scene UI.</td></tr>
+          <tr><td><code>Config.TypingIndicator</code></td><td><code>{ enabled, text, color }</code></td></tr>
+          <tr><td><code>Config.ActionBubble</code></td><td><code>{ duration, color }</code> - used by <code>/ame</code> / <code>/amy</code>.</td></tr>
+          <tr><td><code>Config.DistanceIntensity</code></td><td><code>{ enabled, minOpacity, minScale }</code> - fades/shrinks text by distance.</td></tr>
+          <tr><td><code>Config.ClientSettings</code></td><td>Default <code>/chatsettings</code> values for typing indicator and timestamps.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>moderation.lua - flood, admin, filter, webhooks</h3>
+      <table class="config-table">
+        <tbody>
+          <tr><td><code>Config.WordFilter</code></td><td><code>{ enabled, action: 'censor'|'block', replacement, words }</code> - <code>words</code> is empty by default.</td></tr>
+          <tr><td><code>Config.DiscordWebhooks</code></td><td><code>{ username, avatarUrl, includeIdentifiers, chat, reports, moderation }</code> - each a webhook URL, off by default.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>weapons.lua - weapon-draw auto <code>/me</code></h3>
+      <table class="config-table">
+        <tbody>
+          <tr><td><code>Config.WeaponMe</code></td><td><code>{ enabled, template, fallbackName, cooldown, includeGroups, range }</code></td></tr>
+          <tr><td><code>Config.WeaponNames</code></td><td>Weapon literal → <code>{ label, group }</code>. Unlisted weapons never trigger the auto-<code>/me</code>.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>phone.lua - call relay</h3>
+      <table class="config-table">
+        <tbody>
+          <tr><td><code>Config.PhoneCallRelay.enabled</code></td><td>Default <code>true</code>.</td></tr>
+          <tr><td><code>Config.PhoneCallRelay.script</code></td><td><code>'lb-phone'</code> (default) / <code>'qb-phone'</code> / <code>'qs-smartphone'</code> - which phone resource to hook.</td></tr>
+          <tr><td><code>Config.PhoneCallRelay.types</code></td><td><code>{ say = true, shout = true, low = true }</code> - which chat types relay into an active call.</td></tr>
+          <tr><td><code>Config.PhoneCallRelay.prefix</code></td><td>Default <code>'[Call] '</code>, prefixed to relayed lines.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>scenes.lua - scene markers</h3>
+      <table class="config-table">
+        <tbody>
+          <tr><td><code>Config.SceneMarkers.enabled</code>, <code>maxTextLength</code></td><td>Default <code>200</code> characters.</td></tr>
+          <tr><td><code>durations</code>, <code>radius</code>, <code>removeRadius</code></td><td>1-5 days lifetime; trigger radius default <code>5</code>, delete radius default <code>10</code>.</td></tr>
+          <tr><td><code>markerType</code> / <code>markerColor</code> / <code>markerScale</code></td><td>World marker appearance.</td></tr>
+          <tr><td><code>cleanupInterval</code>, <code>checkInterval</code>, <code>triggerCooldown</code>, <code>createCooldown</code></td><td>Expiry sweep and anti-spam timers.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>locale.lua / locale-de.lua</h3>
+      <p>Every user-facing string is keyed in <code>locale.lua</code> (English, default). A German set ships as <code>locale-de.lua</code> but isn't wired in by default - swap the file in to use it.</p>
+
+      <h2>Commands</h2>
+      <p>30+ commands total (full table in the README); the ones you'll actually configure around:</p>
+      <table class="config-table">
+        <tbody>
+          <tr><td><code>/me</code>, <code>/ame</code>, <code>/amy</code>, <code>/my</code>, <code>/melow</code>, <code>/melong</code></td><td>Roleplay action text, at various ranges.</td></tr>
+          <tr><td><code>/do</code>, <code>/dolow</code>, <code>/dolong</code></td><td>OOC-flavored scene description.</td></tr>
+          <tr><td><code>/b</code>, <code>/ooc</code></td><td>Local and global out-of-character chat.</td></tr>
+          <tr><td><code>/w</code> / <code>/whisper</code>, <code>/l</code> / <code>/low</code>, <code>/cw</code>, <code>/cb</code>, <code>/s</code> / <code>/shout</code></td><td>Volume-scoped speech variants.</td></tr>
+          <tr><td><code>/pm</code>, <code>/r</code> / <code>/reply</code></td><td>Private messages and quick-reply.</td></tr>
+          <tr><td><code>/id</code>, <code>/report</code>, <code>/clear</code> / <code>/clearchat</code>, <code>/time</code>, <code>/togglechat</code>, <code>/chatsettings</code>, <code>/lang</code>, <code>/ag</code></td><td>Utility, reporting, and personal settings (<code>/ag</code> toggles your own grammar correction).</td></tr>
+          <tr><td><code>/cs</code> / <code>/createscene</code>, <code>/ds</code> / <code>/deletescene</code>, <code>/sa</code> / <code>/sceneadmin</code></td><td>Scene markers (admin variant lists + teleports to all scenes).</td></tr>
+          <tr><td><code>/cash</code>, <code>/info [id]</code></td><td>Only exist when <code>Config.Framework ~= 'none'</code>.</td></tr>
+          <tr><td><code>/mute [id] [s]</code>, <code>/unmute</code>, <code>/mutelist</code>, <code>/clearchatall</code>, <code>/a</code>/<code>/ac</code>, <code>/setnationality</code>, <code>/announcement</code></td><td>Admin, gated by <code>Config.AdminPermission</code>.</td></tr>
+          <tr><td><code>.wave</code> etc.</td><td>Dot-prefixed emotes from <code>Config.Emotes.list</code>, separate from slash commands.</td></tr>
+        </tbody>
+      </table>
+      <p>Every command can be toggled individually via <code>Config.Commands</code>.</p>
+
+      <h2>Scene markers</h2>
+      <p>Persistent, database-backed RP notes placed with <code>/cs</code>: pick text and a 1-5 day duration, and a floating marker appears at that spot for everyone. Walking within the configured radius surfaces the note in chat as <code>[SCENE] &lt;text&gt;</code>. Enter/leave tracking, per-scene cooldowns, and auto-expiry are server-authoritative; <code>/sa</code> lists and teleports to every scene, <code>/ds</code> removes your own (or, as admin, any scene). Backed by an auto-created <code>n2_chat_scenes</code> table via <code>oxmysql</code>.</p>
+
+      <h2>Phone call relay</h2>
+      <p>Relays <code>/say</code>, <code>/shout</code>, and <code>/low</code> lines to the sender's active call partner (tagged with the configured prefix) so calls don't require talking over voice - only when the partner isn't already in normal chat range for that message type. Implementation depends on <code>Config.PhoneCallRelay.script</code>:</p>
+      <ul>
+        <li><strong>lb-phone</strong> (default) - listens to <code>lb-phone:callAnswered</code>/<code>callEnded</code>, which carry both participants directly. Confirmed against a live install per the source's own comments.</li>
+        <li><strong>qb-phone</strong> - reconstructs the pairing from <code>qb-phone:server:callContact</code> + <code>acceptCall</code>. Source comments flag this as unverified across forks.</li>
+        <li><strong>qs-smartphone</strong> - no call-connect event exists, so it polls <code>getActiveCallSession</code> every 2s and guesses a field name for the partner. Source comments say to log and adjust against a real install.</li>
+      </ul>
+
+      <h2>Exports / Events</h2>
+      <p><strong>Exports</strong> (<code>exports['n2-chat']:...</code>, called server-side): <code>SendMessage</code>, <code>SendSystemMessage</code>, <code>Broadcast</code>, <code>SendInRange</code>, <code>RegisterCommand</code>, <code>RegisterCommandMeta</code>, <code>ClearChat</code>, <code>GetChatHistory</code>, <code>GetDisplayName</code>, <code>SetMasked</code>/<code>IsMasked</code>, <code>ShowActionBubble</code>, <code>SetSpeechDistortion</code>/<code>GetSpeechDistortion</code>, <code>SetNativeLanguage</code>, <code>AddKnownLanguage</code>, <code>RemoveKnownLanguage</code>, <code>SetSpeakingLanguage</code>/<code>GetSpeakingLanguage</code>, <code>KnowsLanguage</code>, <code>GetKnownLanguages</code>, <code>RegisterEmote</code>.</p>
+      <p><strong>Notable events:</strong> <code>n2-chat:server:reportCreated</code>, <code>n2-chat:client:addMessage</code>, <code>n2-chat:client:addSuggestions</code>, <code>n2-chat:server:createScene</code>, <code>n2-chat:client:setScenes</code>, and the stock-compatible, cancellable <code>chatMessage(source, name, message)</code> event for plain proximity chat.</p>
+
+      <h2>Notes</h2>
+      <div class="callout warn"><strong>Load order:</strong> a resource that registers commands through n2-chat's export must start <em>after</em> n2-chat (<code>dependencies { 'n2-chat' }</code> in its own manifest). This is the #1 troubleshooting item in the README.</div>
+      <div class="callout">Word filter defaults to <code>action = 'censor'</code> (masks and still sends). Switch to <code>'block'</code> to reject the whole message instead. The word list ships empty.</div>
+      <div class="callout">Discord's <code>chat</code> webhook category includes private messages - worth flagging to admins before enabling if players expect PM privacy.</div>
+      <div class="callout">Distance intensity, language unintelligibility, and speech distortion only apply to proximity messages, never to targeted ones (<code>/w</code>, <code>/pm</code>, <code>/cw</code>, <code>/r</code>).</div>
+
+      <footer>Source: <code>[Native2]/n2-chat/</code> (README.md, fxmanifest.lua, client/, server/, config/, shared/utils.lua).</footer>
+    </article>
+  </div>
+</div>
+
+<script src="../js/site.js"></script>
+</body>
+</html>
