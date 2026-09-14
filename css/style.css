@@ -499,13 +499,16 @@ pre code { background: none; border: none; padding: 0; color: var(--text); }
 /* ---------- Callouts ---------- */
 
 .callout {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  /* Not flex: the content here is raw text mixed with inline <code>/<strong>,
+     never wrapped in its own element. A flex container would treat every
+     text run between those inline elements as its own flex item and
+     squeeze each into a narrow wrapping column instead of one flowing
+     paragraph. Position the dot instead and let this be a normal block. */
+  position: relative;
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 14px 16px;
+  padding: 14px 16px 14px 34px;
   margin: 0 0 24px;
   font-size: 0.9rem;
   color: var(--text-dim);
@@ -513,10 +516,11 @@ pre code { background: none; border: none; padding: 0; color: var(--text); }
 }
 .callout::before {
   content: "";
-  flex-shrink: 0;
+  position: absolute;
+  left: 16px;
+  top: 19px;
   width: 7px;
   height: 7px;
-  margin-top: 7px;
   border-radius: 50%;
   background: var(--accent-dim);
 }

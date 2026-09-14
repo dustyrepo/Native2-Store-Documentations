@@ -46,7 +46,7 @@
       .map(function (e, i) {
         return (
           '<a class="search-result' + (i === activeIndex ? " active" : "") + '" href="' + basePrefix + e.page + '" data-i="' + i + '">' +
-          '<div class="r-title"><span class="r-section">' + escapeHtml(e.section) + "</span>" + escapeHtml(e.title) + "</div>" +
+          '<div class="r-title"><span class="r-section">' + escapeHtml(e.section) + "</span><span>" + escapeHtml(e.title) + "</span></div>" +
           '<div class="r-excerpt">' + escapeHtml(e.excerpt) + "</div>" +
           "</a>"
         );
