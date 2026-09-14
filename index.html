@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>N2 Docs</title>
-<meta name="description" content="Installation, configuration, commands, and exports for n2-recoil, n2-knockout, n2-chat, and n2-laptop — the Native2 FiveM resource pack.">
+<meta name="description" content="Installation, configuration, commands, and exports for n2-recoil, n2-knockout, n2-chat, n2-laptop, and n2-shops — the Native2 FiveM resource pack.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="N2 Docs">
-<meta property="og:description" content="Installation, configuration, commands, and exports for n2-recoil, n2-knockout, n2-chat, and n2-laptop — the Native2 FiveM resource pack.">
+<meta property="og:description" content="Installation, configuration, commands, and exports for n2-recoil, n2-knockout, n2-chat, n2-laptop, and n2-shops — the Native2 FiveM resource pack.">
 <meta property="og:image" content="https://dustyrepo.github.io/Native2-Store-Documentations/assets/logo.png">
 <meta property="og:url" content="https://dustyrepo.github.io/Native2-Store-Documentations/">
 <link rel="icon" type="image/png" href="assets/logo.png">
@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 <div id="skeleton" class="skeleton" aria-hidden="true">
@@ -50,7 +50,7 @@
       <kbd>Esc</kbd>
     </div>
     <div id="search-results" class="search-results">
-      <p class="search-empty">Type to search config keys, commands, and sections across all four scripts.</p>
+      <p class="search-empty">Type to search config keys, commands, and sections across all five scripts.</p>
     </div>
   </div>
 </div>
@@ -83,144 +83,182 @@
 <div class="layout">
   <aside class="sidebar">
     <nav class="nav-group">
-      <h3>Overview</h3>
-      <ul>
-        <li><a href="index.html" class="active"><span class="nav-dot"></span>Home</a></li>
-      </ul>
-    </nav>
-    <nav class="nav-group">
-      <h3>Scripts</h3>
-      <ul>
-        <li class="nav-parent" data-page="n2-recoil.html">
-          <div class="nav-parent-row">
-            <a href="scripts/n2-recoil.html" class="nav-parent-link"><span class="nav-dot"></span>n2-recoil</a>
-            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-recoil sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <ul class="nav-children" hidden>
-            <li><a href="scripts/n2-recoil.html#dependencies">Dependencies</a></li>
-            <li><a href="scripts/n2-recoil.html#installation">Installation</a></li>
-            <li class="nav-parent">
-              <div class="nav-parent-row">
-                <a href="scripts/n2-recoil.html#configuration" class="nav-parent-link">Configuration</a>
-                <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Configuration sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-              </div>
-              <ul class="nav-children" hidden>
-                <li><a href="scripts/n2-recoil.html#recoil-categories">Recoil categories</a></li>
+              <h3>Overview</h3>
+              <ul>
+                <li><a href="index.html"><span class="nav-dot"></span>Home</a></li>
               </ul>
-            </li>
-            <li><a href="scripts/n2-recoil.html#commands">Commands</a></li>
-            <li><a href="scripts/n2-recoil.html#exports-events">Exports / Events</a></li>
-            <li><a href="scripts/n2-recoil.html#notes">Notes</a></li>
-          </ul>
-        </li>
-        <li class="nav-parent" data-page="n2-knockout.html">
-          <div class="nav-parent-row">
-            <a href="scripts/n2-knockout.html" class="nav-parent-link"><span class="nav-dot"></span>n2-knockout</a>
-            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-knockout sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <ul class="nav-children" hidden>
-            <li><a href="scripts/n2-knockout.html#dependencies">Dependencies</a></li>
-            <li><a href="scripts/n2-knockout.html#installation">Installation</a></li>
-            <li><a href="scripts/n2-knockout.html#configuration">Configuration</a></li>
-            <li><a href="scripts/n2-knockout.html#commands">Commands</a></li>
-            <li><a href="scripts/n2-knockout.html#exports-events">Exports / Events</a></li>
-            <li><a href="scripts/n2-knockout.html#nui-locale">NUI &amp; locale</a></li>
-            <li><a href="scripts/n2-knockout.html#notes">Notes</a></li>
-          </ul>
-        </li>
-        <li class="nav-parent" data-page="n2-chat.html">
-          <div class="nav-parent-row">
-            <a href="scripts/n2-chat.html" class="nav-parent-link"><span class="nav-dot"></span>n2-chat</a>
-            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-chat sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <ul class="nav-children" hidden>
-            <li><a href="scripts/n2-chat.html#dependencies">Dependencies</a></li>
-            <li><a href="scripts/n2-chat.html#installation">Installation</a></li>
-            <li class="nav-parent">
-              <div class="nav-parent-row">
-                <a href="scripts/n2-chat.html#configuration" class="nav-parent-link">Configuration</a>
-                <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Configuration sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-              </div>
-              <ul class="nav-children" hidden>
-                <li><a href="scripts/n2-chat.html#general-lua">general.lua</a></li>
-                <li><a href="scripts/n2-chat.html#appearance-lua">appearance.lua</a></li>
-                <li><a href="scripts/n2-chat.html#moderation-lua">moderation.lua</a></li>
-                <li><a href="scripts/n2-chat.html#weapons-lua">weapons.lua</a></li>
-                <li><a href="scripts/n2-chat.html#phone-lua">phone.lua</a></li>
-                <li><a href="scripts/n2-chat.html#scenes-lua">scenes.lua</a></li>
-                <li><a href="scripts/n2-chat.html#locale-lua">locale.lua</a></li>
+            </nav>
+            <nav class="nav-group">
+              <h3>Scripts</h3>
+              <ul>
+                <li class="nav-parent" data-page="n2-recoil.html">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-recoil.html" class="nav-parent-link"><span class="nav-dot"></span>n2-recoil</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-recoil sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                <li><a href="scripts/n2-recoil.html#dependencies">Dependencies</a></li>
+                <li><a href="scripts/n2-recoil.html#installation">Installation</a></li>
+                <li class="nav-parent">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-recoil.html#configuration" class="nav-parent-link">Configuration</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Configuration sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                    <li><a href="scripts/n2-recoil.html#recoil-categories">Recoil categories</a></li>
+                  </ul>
+                </li>
+                <li><a href="scripts/n2-recoil.html#commands">Commands</a></li>
+                <li><a href="scripts/n2-recoil.html#exports-events">Exports / Events</a></li>
+                <li><a href="scripts/n2-recoil.html#notes">Notes</a></li>
               </ul>
-            </li>
-            <li><a href="scripts/n2-chat.html#commands">Commands</a></li>
-            <li><a href="scripts/n2-chat.html#scene-markers">Scene markers</a></li>
-            <li><a href="scripts/n2-chat.html#phone-call-relay">Phone call relay</a></li>
-            <li><a href="scripts/n2-chat.html#exports-events">Exports / Events</a></li>
-            <li><a href="scripts/n2-chat.html#notes">Notes</a></li>
-          </ul>
-        </li>
-        <li class="nav-parent" data-page="n2-laptop.html">
-          <div class="nav-parent-row">
-            <a href="scripts/n2-laptop.html" class="nav-parent-link"><span class="nav-dot"></span>n2-laptop</a>
-            <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-laptop sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <ul class="nav-children" hidden>
-            <li><a href="scripts/n2-laptop.html#dependencies">Dependencies</a></li>
-            <li class="nav-parent">
-              <div class="nav-parent-row">
-                <a href="scripts/n2-laptop.html#installation" class="nav-parent-link">Installation</a>
-                <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Installation sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-              </div>
-              <ul class="nav-children" hidden>
-                <li><a href="scripts/n2-laptop.html#database">Database</a></li>
+                </li>
+                <li class="nav-parent" data-page="n2-knockout.html">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-knockout.html" class="nav-parent-link"><span class="nav-dot"></span>n2-knockout</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-knockout sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                <li><a href="scripts/n2-knockout.html#dependencies">Dependencies</a></li>
+                <li><a href="scripts/n2-knockout.html#installation">Installation</a></li>
+                <li><a href="scripts/n2-knockout.html#configuration">Configuration</a></li>
+                <li><a href="scripts/n2-knockout.html#commands">Commands</a></li>
+                <li><a href="scripts/n2-knockout.html#exports-events">Exports / Events</a></li>
+                <li><a href="scripts/n2-knockout.html#nui-locale">NUI &amp; locale</a></li>
+                <li><a href="scripts/n2-knockout.html#notes">Notes</a></li>
               </ul>
-            </li>
-            <li class="nav-parent">
-              <div class="nav-parent-row">
-                <a href="scripts/n2-laptop.html#configuration" class="nav-parent-link">Configuration</a>
-                <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Configuration sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-              </div>
-              <ul class="nav-children" hidden>
-                <li><a href="scripts/n2-laptop.html#config-config-lua">config/config.lua</a></li>
-                <li><a href="scripts/n2-laptop.html#config-marketplaces-lua">config/marketplaces.lua</a></li>
+                </li>
+                <li class="nav-parent" data-page="n2-chat.html">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-chat.html" class="nav-parent-link"><span class="nav-dot"></span>n2-chat</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-chat sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                <li><a href="scripts/n2-chat.html#dependencies">Dependencies</a></li>
+                <li><a href="scripts/n2-chat.html#installation">Installation</a></li>
+                <li class="nav-parent">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-chat.html#configuration" class="nav-parent-link">Configuration</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Configuration sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                    <li><a href="scripts/n2-chat.html#general-lua">general.lua</a></li>
+                    <li><a href="scripts/n2-chat.html#appearance-lua">appearance.lua</a></li>
+                    <li><a href="scripts/n2-chat.html#moderation-lua">moderation.lua</a></li>
+                    <li><a href="scripts/n2-chat.html#weapons-lua">weapons.lua</a></li>
+                    <li><a href="scripts/n2-chat.html#phone-lua">phone.lua</a></li>
+                    <li><a href="scripts/n2-chat.html#scenes-lua">scenes.lua</a></li>
+                    <li><a href="scripts/n2-chat.html#locale-lua">locale.lua</a></li>
+                  </ul>
+                </li>
+                <li><a href="scripts/n2-chat.html#commands">Commands</a></li>
+                <li><a href="scripts/n2-chat.html#scene-markers">Scene markers</a></li>
+                <li><a href="scripts/n2-chat.html#phone-call-relay">Phone call relay</a></li>
+                <li><a href="scripts/n2-chat.html#exports-events">Exports / Events</a></li>
+                <li><a href="scripts/n2-chat.html#notes">Notes</a></li>
               </ul>
-            </li>
-            <li class="nav-parent">
-              <div class="nav-parent-row">
-                <a href="scripts/n2-laptop.html#apps" class="nav-parent-link">Apps</a>
-                <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Apps sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-              </div>
-              <ul class="nav-children" hidden>
-                <li><a href="scripts/n2-laptop.html#app-bank">Bank</a></li>
-                <li><a href="scripts/n2-laptop.html#app-cryptex">Cryptex</a></li>
-                <li><a href="scripts/n2-laptop.html#app-mail">Mail</a></li>
-                <li><a href="scripts/n2-laptop.html#app-market">Market</a></li>
-                <li><a href="scripts/n2-laptop.html#app-placement">Placement</a></li>
-                <li><a href="scripts/n2-laptop.html#app-sell">Sell</a></li>
-                <li><a href="scripts/n2-laptop.html#app-usb">USB</a></li>
-                <li><a href="scripts/n2-laptop.html#app-whispr">Whispr</a></li>
+                </li>
+                <li class="nav-parent" data-page="n2-laptop.html">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-laptop.html" class="nav-parent-link"><span class="nav-dot"></span>n2-laptop</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-laptop sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                <li><a href="scripts/n2-laptop.html#dependencies">Dependencies</a></li>
+                <li class="nav-parent">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-laptop.html#installation" class="nav-parent-link">Installation</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Installation sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                    <li><a href="scripts/n2-laptop.html#database">Database</a></li>
+                  </ul>
+                </li>
+                <li class="nav-parent">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-laptop.html#configuration" class="nav-parent-link">Configuration</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Configuration sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                    <li><a href="scripts/n2-laptop.html#config-config-lua">config/config.lua</a></li>
+                    <li><a href="scripts/n2-laptop.html#config-marketplaces-lua">config/marketplaces.lua</a></li>
+                  </ul>
+                </li>
+                <li class="nav-parent">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-laptop.html#apps" class="nav-parent-link">Apps</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Apps sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                    <li><a href="scripts/n2-laptop.html#app-bank">Bank</a></li>
+                    <li><a href="scripts/n2-laptop.html#app-cryptex">Cryptex</a></li>
+                    <li><a href="scripts/n2-laptop.html#app-mail">Mail</a></li>
+                    <li><a href="scripts/n2-laptop.html#app-market">Market</a></li>
+                    <li><a href="scripts/n2-laptop.html#app-placement">Placement</a></li>
+                    <li><a href="scripts/n2-laptop.html#app-sell">Sell</a></li>
+                    <li><a href="scripts/n2-laptop.html#app-usb">USB</a></li>
+                    <li><a href="scripts/n2-laptop.html#app-whispr">Whispr</a></li>
+                  </ul>
+                </li>
+                <li><a href="scripts/n2-laptop.html#commands">Commands</a></li>
+                <li><a href="scripts/n2-laptop.html#exports-events">Exports / Events</a></li>
+                <li><a href="scripts/n2-laptop.html#notes">Notes</a></li>
               </ul>
-            </li>
-            <li><a href="scripts/n2-laptop.html#commands">Commands</a></li>
-            <li><a href="scripts/n2-laptop.html#exports-events">Exports / Events</a></li>
-            <li><a href="scripts/n2-laptop.html#notes">Notes</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-    <nav class="nav-group sidebar-external-links">
-      <h3>Links</h3>
-      <ul>
-        <li><a href="https://native2-store.tebex.store/" target="_blank" rel="noopener"><span class="nav-dot"></span>Store<svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></li>
-        <li><a href="https://discord.gg/veaHZj5Pq9" target="_blank" rel="noopener"><span class="nav-dot"></span>Discord<svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></li>
-      </ul>
-    </nav>
+                </li>
+                <li class="nav-parent" data-page="n2-shops.html">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-shops.html" class="nav-parent-link"><span class="nav-dot"></span>n2-shops</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle n2-shops sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                <li><a href="scripts/n2-shops.html#dependencies">Dependencies</a></li>
+                <li><a href="scripts/n2-shops.html#installation">Installation</a></li>
+                <li class="nav-parent">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-shops.html#configuration" class="nav-parent-link">Configuration</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Configuration sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                    <li><a href="scripts/n2-shops.html#config-stores-lua">config/stores.lua</a></li>
+                    <li><a href="scripts/n2-shops.html#config-shelves-lua">config/shelves.lua</a></li>
+                    <li><a href="scripts/n2-shops.html#config-shelf-offsets-lua">config/shelf_offsets.lua</a></li>
+                  </ul>
+                </li>
+                <li class="nav-parent">
+                  <div class="nav-parent-row">
+                    <a href="scripts/n2-shops.html#features" class="nav-parent-link">Features</a>
+                    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle Features sections"><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  </div>
+                  <ul class="nav-children" hidden>
+                    <li><a href="scripts/n2-shops.html#feature-store-zones">Store zones</a></li>
+                    <li><a href="scripts/n2-shops.html#feature-shelf-stocking">Shelf stocking</a></li>
+                    <li><a href="scripts/n2-shops.html#feature-clerk-ai">Clerk AI</a></li>
+                    <li><a href="scripts/n2-shops.html#feature-register-robbery">Register robbery</a></li>
+                    <li><a href="scripts/n2-shops.html#feature-dispatch">Dispatch</a></li>
+                    <li><a href="scripts/n2-shops.html#feature-dev-tools">Dev-only tools</a></li>
+                  </ul>
+                </li>
+                <li><a href="scripts/n2-shops.html#commands">Commands</a></li>
+                <li><a href="scripts/n2-shops.html#exports-events">Exports / Events</a></li>
+                <li><a href="scripts/n2-shops.html#notes">Notes</a></li>
+              </ul>
+                </li>
+              </ul>
+            </nav>
+            <nav class="nav-group sidebar-external-links">
+              <h3>Links</h3>
+              <ul>
+                <li><a href="https://native2-store.tebex.store/" target="_blank" rel="noopener"><span class="nav-dot"></span>Store<svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></li>
+                <li><a href="https://discord.gg/veaHZj5Pq9" target="_blank" rel="noopener"><span class="nav-dot"></span>Discord<svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a></li>
+              </ul>
+            </nav>
   </aside>
 
   <div class="content">
     <article>
       <p class="eyebrow">Native2 · resource documentation</p>
       <h1>N2 Docs</h1>
-      <p class="lede">Installation, configuration, commands, and exports for the four Native2 FiveM resources. Every value on this site is read directly from the resource source, not guessed.</p>
+      <p class="lede">Installation, configuration, commands, and exports for the five Native2 FiveM resources. Every value on this site is read directly from the resource source, not guessed.</p>
 
       <div class="script-grid">
         <a class="script-card" href="scripts/n2-recoil.html">
@@ -243,6 +281,11 @@
           <p class="desc">Placeable laptop item with a full desktop UI: banking, crypto, mail, marketplaces, resale, and USB storage.</p>
           <div class="tags"><span class="tag">ox_inventory</span><span class="tag">oxmysql</span></div>
         </a>
+        <a class="script-card" href="scripts/n2-shops.html">
+          <div class="name">n2-shops</div>
+          <p class="desc">Convenience-store system: shelf stocking, a clerk AI that patrols and remembers shoplifters, and register robbery.</p>
+          <div class="tags"><span class="tag">ox_target</span><span class="tag">ox_inventory</span></div>
+        </a>
       </div>
 
       <h2>How this site is organized</h2>
@@ -255,13 +298,13 @@
         <li><strong>Notes</strong> - gotchas and edge cases worth knowing before you rely on the script in production.</li>
       </ul>
 
-      <footer>Scope: n2-recoil, n2-knockout, n2-chat, n2-laptop.</footer>
+      <footer>Scope: n2-recoil, n2-knockout, n2-chat, n2-laptop, n2-shops.</footer>
     </article>
   </div>
 </div>
 
-<script src="js/search-index.js?v=2"></script>
-<script src="js/search.js?v=2"></script>
-<script src="js/site.js?v=2"></script>
+<script src="js/search-index.js?v=3"></script>
+<script src="js/search.js?v=3"></script>
+<script src="js/site.js?v=3"></script>
 </body>
 </html>

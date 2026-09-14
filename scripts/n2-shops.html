@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>n2-knockout · N2 Docs</title>
-<meta name="description" content="Setup and full config reference for n2-knockout, a FiveM melee knockout and downed system with skill-check recovery and impairment effects.">
+<title>n2-shops · N2 Docs</title>
+<meta name="description" content="Setup and full config reference for n2-shops, a FiveM convenience-store system with shelf stocking, a clerk AI, shoplifting detection, and register robbery.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="n2-knockout — N2 Docs">
-<meta property="og:description" content="Setup and full config reference for n2-knockout, a FiveM melee knockout and downed system with skill-check recovery and impairment effects.">
+<meta property="og:title" content="n2-shops — N2 Docs">
+<meta property="og:description" content="Setup and full config reference for n2-shops, a FiveM convenience-store system with shelf stocking, a clerk AI, shoplifting detection, and register robbery.">
 <meta property="og:image" content="https://dustyrepo.github.io/Native2-Store-Documentations/assets/logo.png">
-<meta property="og:url" content="https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-knockout.html">
+<meta property="og:url" content="https://dustyrepo.github.io/Native2-Store-Documentations/scripts/n2-shops.html">
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="apple-touch-icon" href="../assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,7 +55,6 @@
   </div>
 </div>
 
-
 <header class="site-header">
   <a href="../index.html" class="brand">
     <img class="brand-mark" src="../assets/logo.png" alt="N2 Docs logo">
@@ -82,7 +81,7 @@
 
 <div class="layout">
   <aside class="sidebar">
-    <nav class="nav-group">
+<nav class="nav-group">
               <h3>Overview</h3>
               <ul>
                 <li><a href="../index.html"><span class="nav-dot"></span>Home</a></li>
@@ -258,107 +257,153 @@
     <div class="content-row">
     <article>
       <p class="eyebrow">Script</p>
-      <h1>n2-knockout</h1>
-      <p class="lede">Melee knockout and downed system. Enough unarmed hits within a rolling window ragdolls the victim to the ground, invincible and screen-blacked, until they recover with a skill check and walk away impaired, then headachy. Bridges ESX, QBCore, and QBX automatically and can announce stand-ups into n2-chat.</p>
+      <h1>n2-shops</h1>
+      <p class="lede">A 24/7-style convenience-store system: grabbable shelf items with live stock state, a server-authoritative clerk NPC that greets, patrols, restocks, and remembers shoplifters, pay-or-get-caught shoplifting with police dispatch, and a gunpoint or dead-clerk register-robbery minigame. Ships 8 pre-placed vanilla-map stores and 5 edited shelf prop models.</p>
 
       <h2 id="dependencies">Dependencies</h2>
       <ul>
         <li><code>fx_version 'cerulean'</code>, <code>game 'gta5'</code>, <code>lua54 'yes'</code></li>
-        <li><strong><code>ox_lib</code></strong> - hard dependency (<code>lib.notify</code>, <code>lib.skillCheck</code>).</li>
-        <li>Framework bridge is auto-detected, not configured: <code>qbx_core</code> → <code>qb-core</code> → <code>es_extended</code>, checked in that order at both client and server. None running falls back to standalone (<code>Bridge.IsPlayerDead</code> always <code>false</code>).</li>
-        <li><strong>n2-chat</strong> - optional soft integration. Used only if <code>Config.ChatIntegration.Enabled</code> is true and n2-chat is started; calls its <code>GetDisplayName</code> and <code>SendInRange</code>/<code>ShowActionBubble</code> exports.</li>
+      </ul>
+      <div class="callout warn"><strong>No <code>dependencies</code> block in <code>fxmanifest.lua</code>.</strong> <code>ox_lib</code> is loaded as a shared script (so it must exist and start first or the resource errors), and <code>ox_target</code>/<code>ox_inventory</code> are called at runtime via their exports with no manifest-level enforcement. INSTALLATION.txt and the project's own CLAUDE.md both describe these as dependencies - only the manifest itself doesn't say so. Worth adding a real <code>dependencies</code> array.</div>
+      <ul>
+        <li><strong>Framework</strong> - self-registering bridge, resolved by priority: <code>qbx_core</code> (100) → <code>qb-core</code> (90) → <code>es_extended</code> (80). None are hard dependencies; with none started, purchases/robbery payouts silently do nothing and the console prints a warning.</li>
+        <li><strong>Dispatch (optional)</strong> - same pattern: <code>n2-mdt</code> (100) → <code>cd_dispatch</code> (90) → <code>qbx_police</code> (80). With none running, alerts just print to console.</li>
+        <li><strong>Stream assets</strong> - <code>stream/v_ret_247shelves01-05.yft</code>, five edited shelf models that <em>replace</em> the stock GTA props of the same name.</li>
       </ul>
 
       <h2 id="installation">Installation</h2>
       <ol>
-        <li>Drop the <code>n2-knockout</code> folder into your resources directory.</li>
-        <li>Make sure <code>ox_lib</code> is installed.</li>
-        <li>Add <code>ensure n2-knockout</code> to <code>server.cfg</code>, after <code>ox_lib</code> and after whichever framework you run (bridge detection needs to see it already started).</li>
-        <li>No database or SQL setup required.</li>
-        <li>Edit <code>config.lua</code> to taste. The framework bridge self-detects - nothing to select manually.</li>
+        <li>Install and start <code>ox_lib</code>, <code>ox_target</code>, <code>ox_inventory</code>, and a supported framework <strong>before</strong> n2-shops.</li>
+        <li>Copy the folder into <code>resources/[Native2]/n2-shops/</code>.</li>
+        <li>Remove every existing/default store entry from <code>ox_inventory</code>'s <code>data/shops.lua</code> - leftover stock shops at the same coordinates conflict with the stores this resource manages. Ammunation and liquor stores aren't supported yet.</li>
+        <li>The <code>stream/</code> shelf models replace stock props automatically once the resource runs - no separate step.</li>
+        <li>Add <code>ensure n2-shops</code> to <code>server.cfg</code>, after ox_lib/ox_target/ox_inventory/your framework.</li>
+        <li>Add every item in <code>Config.Items</code> (<code>config/shelves.lua</code>) to <code>ox_inventory</code>'s items table: <code>water</code>, <code>soda</code>, <code>burger</code>, <code>sandwich</code>, <code>bread</code>, <code>butter</code>, <code>cheese</code>, <code>devkit_lays</code>, <code>devkit_milkduds</code>.</li>
+        <li>Before going live, review <code>config/stores.lua</code> (coordinates are hand-captured for the vanilla map), <code>Config.CaughtMemory.mode</code>, <code>Config.RegisterRobbery</code> payout/timing, and <code>Config.BlockedProps</code>.</li>
       </ol>
+      <div class="callout">No database/SQL setup - all state (shelf stock, debt tabs, clerk bookkeeping, robbery cooldowns) is in memory. A resource or server restart clears it, except <code>'timed'</code>/<code>'never'</code>-mode caught-shoplifter memory, which persists via framework player metadata.</div>
 
       <h2 id="configuration">Configuration</h2>
-      <p>All keys live under the global <code>Config</code> table in <code>config.lua</code>.</p>
+
+      <h3 id="config-stores-lua">config/stores.lua</h3>
       <div class="table-scroll">
         <table class="config-table">
           <thead><tr><th>Key</th><th>Default</th><th>Controls</th></tr></thead>
           <tbody>
-            <tr><td><code>Config.Debug</code></td><td><code>false</code></td><td>Debug prints, and unlocks the <code>/n2ko</code> self-knockout test command.</td></tr>
-            <tr><td><code>Config.MeleeWeapons</code></td><td><code>{ WEAPON_UNARMED = true }</code></td><td>Which weapon hashes count as melee for triggering a knockout hit.</td></tr>
-            <tr><td><code>Config.Knockout.HitsRequiredMin/Max</code></td><td><code>3</code> / <code>7</code></td><td>Random hit threshold rolled per fight before the victim goes down.</td></tr>
-            <tr><td><code>Config.Screen.FadeOutTime</code></td><td><code>0</code> ms</td><td>Screen fade-out time at the knockout moment.</td></tr>
-            <tr><td><code>Config.Screen.BlackHoldTime</code></td><td><code>3500</code> ms</td><td>How long the screen stays black.</td></tr>
-            <tr><td><code>Config.Screen.FadeInTime</code></td><td><code>500</code> ms</td><td>Fade back in once conscious.</td></tr>
-            <tr><td><code>Config.Downed.MaxTime</code></td><td><code>90</code> s</td><td>Max time knocked out before auto stand-up.</td></tr>
-            <tr><td><code>Config.Downed.HealthRegenPerSec</code></td><td><code>4</code></td><td>Health regen per second while downed (out of 200).</td></tr>
-            <tr><td><code>Config.Downed.SkillCheck.Enabled</code></td><td><code>true</code></td><td>If false, pressing the stand-up key gets straight up instantly.</td></tr>
-            <tr><td><code>Config.Downed.SkillCheck.Stages</code></td><td><code>{ easy, hard, medium }</code></td><td><code>ox_lib</code> skill-check stage sequence required to stand up.</td></tr>
-            <tr><td><code>Config.Downed.SkillCheck.RetryDelay</code></td><td><code>2</code> s</td><td>Cooldown after a failed skill check before retrying.</td></tr>
-            <tr><td><code>Config.Effects.Blur</code></td><td>on, 15-20 s, 0.2 s transition</td><td>Post-standup vision blur and its randomized duration.</td></tr>
-            <tr><td><code>Config.Effects.DrunkWalk.Enabled</code></td><td><code>true</code></td><td>Drunk movement clipset during impairment.</td></tr>
-            <tr><td><code>Config.Effects.CameraSway</code></td><td>on, intensity <code>0.3</code></td><td>Camera sway during impairment (0.0-1.0).</td></tr>
-            <tr><td><code>Config.Effects.SlowMovement</code></td><td>on, ×<code>0.4</code></td><td>Movement speed multiplier while impaired.</td></tr>
-            <tr><td><code>Config.Effects.ShootBlock.Enabled</code></td><td><code>true</code></td><td>Blocks firing/aiming while impaired.</td></tr>
-            <tr><td><code>Config.Effects.Trip</code></td><td>on, 30% chance / 2 s check / 1200 ms ragdoll</td><td>Chance to stumble briefly while impaired and moving.</td></tr>
-            <tr><td><code>Config.Effects.MuffledAudioScene</code></td><td><code>'AH_3A_KO_EXPLOSION'</code></td><td>GTA audio scene during impairment; set <code>nil</code> to disable.</td></tr>
-            <tr><td><code>Config.Headache</code></td><td>on, 60 s</td><td>Lingering effect after impairment ends.</td></tr>
-            <tr><td><code>Config.Headache.Shake</code></td><td>on, <code>LARGE_EXPLOSION_SHAKE</code>, intensity 0.9, every 5-15 s</td><td>Random camera-shake spikes during the headache.</td></tr>
-            <tr><td><code>Config.Headache.SlowMovement</code></td><td>on, ×<code>0.8</code></td><td>Movement slowdown during the headache.</td></tr>
-            <tr><td><code>Config.Sounds.Volume</code></td><td><code>0.1</code></td><td>Playback volume (0-1) for custom sounds.</td></tr>
-            <tr><td><code>Config.Sounds.EarRinging</code></td><td><code>'earring.mp3'</code></td><td>File under <code>sounds/</code> played as the screen fades back in.</td></tr>
-            <tr><td><code>Config.ChatIntegration.Enabled</code></td><td><code>true</code></td><td>Announce stand-up into n2-chat if it's running.</td></tr>
-            <tr><td><code>Config.ChatIntegration.Message</code></td><td><code>'slowly stands up after being knocked out.'</code></td><td>Text appended after the player's name.</td></tr>
-            <tr><td><code>Config.ChatIntegration.Color</code></td><td><code>'#C48EC4'</code></td><td>Hex color of the chat message.</td></tr>
-            <tr><td><code>Config.ChatIntegration.Range</code></td><td><code>10.0</code></td><td>Radius other players must be within to see the message/action bubble.</td></tr>
+            <tr><td><code>Config.Debug</code></td><td><code>false</code></td><td>Gates <code>/calibrateshelf</code> and <code>/n2shops_debugzones</code>. Leave off in production.</td></tr>
+            <tr><td><code>Config.BlockedProps</code></td><td>e.g. <code>v_ret_247_fruit</code></td><td>Model names deleted on sight anywhere in the world (1s poll) - stock clutter that clips through the custom shelves.</td></tr>
+            <tr><td><code>Config.CaughtMemory.mode</code></td><td><code>'resource'</code></td><td><code>'resource'</code> (cleared on resource/server restart), <code>'timed'</code> (persists via framework metadata, expires after <code>duration</code> minutes), <code>'never'</code> (persists forever).</td></tr>
+            <tr><td><code>Config.CaughtMemory.duration</code></td><td>-</td><td>Minutes before <code>'timed'</code>-mode caught memory expires; ignored for the other modes.</td></tr>
+            <tr><td><code>Config.RegisterRobbery.minCops</code></td><td><code>0</code></td><td>Minimum on-duty cops required before a robbery can start. Unenforced at <code>0</code> unless a dispatch bridge reports a real count.</td></tr>
+            <tr><td><code>Config.RegisterRobbery.threatWindow</code></td><td><code>15000</code> ms</td><td>How long "Force Register Open" stays available after aiming at the clerk.</td></tr>
+            <tr><td><code>Config.RegisterRobbery.ticks</code> / <code>tickInterval</code></td><td><code>10</code> / <code>3000</code> ms</td><td>10 payouts every 3s = 30s full drain.</td></tr>
+            <tr><td><code>Config.RegisterRobbery.cashMin</code> / <code>cashMax</code></td><td><code>10</code> / <code>30</code></td><td>Cash per drip.</td></tr>
+            <tr><td><code>Config.RegisterRobbery.policeDelay</code></td><td><code>10000</code> ms</td><td>Delay after the first drip before the dispatch alert fires.</td></tr>
+            <tr><td><code>Config.RegisterRobbery.cooldown</code></td><td><code>600000</code> ms (10 min)</td><td>Per-store cooldown after a robbery ends or is interrupted.</td></tr>
+            <tr><td><code>Config.RegisterRobbery.respawnDelay</code></td><td><code>600000</code> ms (10 min)</td><td>Delay after the clerk's death before it respawns.</td></tr>
           </tbody>
         </table>
       </div>
+      <p><code>Config.Stores</code> is an array of 8 stores, each with: <code>label</code>; <code>clerk</code> (model, home coords as a vec4 with heading, patrol stops with coords/heading/anim); <code>counters</code>/<code>registers</code> (box zones); <code>doors</code> (box zones, with optional per-door <code>axis</code>/<code>invert</code> tuning - see Notes); <code>backroom</code> (a single box or poly zone). All 8 stores share the same structure - only the hand-captured coordinate values differ.</p>
+
+      <h3 id="config-shelves-lua">config/shelves.lua</h3>
+      <ul>
+        <li><code>Config.GrabAnims</code> - <code>high</code>/<code>mid</code>/<code>low</code> anim dict+clip, matched to a shelf slot's height tier.</li>
+        <li><code>Config.Restock.animDuration</code> (<code>3000</code> ms) - how long the clerk's restock animation plays per item.</li>
+        <li><code>Config.Props</code> - prop-key → one or more real GTA model names (some keys round-robin between visually different models, e.g. three different chip-bag props).</li>
+        <li><code>Config.Items</code> - prop-key → <code>ox_inventory</code> item name. Several visually distinct prop keys can map to the same item.</li>
+        <li><code>Config.Prices</code> - prop-key → cash price per unit, added to the player's store tab on grab (not charged immediately).</li>
+        <li><code>Config.Shelves[shelfModelHash]</code> - per shelf model, slot groups built from bone-name ranges (e.g. <code>Chips1</code>..<code>Chips6</code>) mapped to a prop key.</li>
+      </ul>
+      <div class="callout warn"><strong><code>v_ret_247shelves02</code> has no configured slots.</strong> Its bone offsets exist in <code>config/shelf_offsets.lua</code> and the model ships as a stream asset, but <code>Config.Shelves</code> has no entry for it - it's a replaced prop with zero grabbable items right now, effectively decorative until calibrated.</div>
+
+      <h3 id="config-shelf-offsets-lua">config/shelf_offsets.lua</h3>
+      <p><code>Config.ShelfBoneOffsets[shelfHash][boneName]</code> - per-bone local attach offset (<code>x, y, z, rx, ry, rz</code>) plus a height <code>tier</code>. Entirely generated by the in-game calibration tool (<code>/calibrateshelf</code>); not meant to be hand-edited except to paste tool output in.</p>
+
+      <h2 id="features">Features</h2>
+
+      <h3 id="feature-store-zones">Store zones</h3>
+      <p>Each store's <code>doors</code> array drives shoplifting-exit detection, deliberately <strong>not</strong> built on ox_lib's shared zone poller (its 300ms sample rate is too slow for a player sprinting across a ~1.5-unit doorway). Instead every door runs its own per-frame check within 15 units, falling back to a 1s poll otherwise. Crossing inward fires <code>enteredStore</code>; crossing outward fires <code>checkPaid</code>, which resolves to a "thanks, bye" or a caught-shoplifting reaction depending on unpaid debt. A door's inside/outside side is computed from local X or Y after de-rotating by heading, with an optional <code>invert</code> flag - both hand-captured and verified in-game via <code>/n2shops_debugzones</code>. Backroom zones are plain ox_lib box/poly zones (room-sized, no thin-doorway timing issue).</p>
+
+      <h3 id="feature-shelf-stocking">Shelf stocking / grabbing</h3>
+      <p>The client polls the world every 1s for shelf props and "stocks" them: spawns one prop per configured slot (skipping slots the server already reports taken), attached via bone offset, frozen/invincible/collidable so the engine doesn't reclaim it as disposable population. Each prop becomes an ox_target "Take X" option; selecting it opens a quantity dialog, then requests a grab per unit (rate-limited 300ms/grab). The server validates the slot, adds the item to inventory <strong>immediately on grab</strong> (not on payment), marks the slot taken for every client, adds the price to that player's per-store debt tab, and queues a restock. Debt is only settled at the counter or forced at the door on exit - walking out with unpaid debt clears it silently but marks the player caught and dispatches a "Shoplifting" alert. Grabbed items stay in inventory even if caught. Restocks for a whole visit are batched and queued 5s after the player leaves or pays, not per-grab.</p>
+
+      <h3 id="feature-clerk-ai">Clerk AI</h3>
+      <p>Fully server-authoritative: the server is the single source of truth for patrol, speech, and reactions, and broadcasts the resulting commands to every client within 40 units of that store; clients only spawn the shared networked ped and play back what they're told. Only one client at a time "owns" spawning a given store's clerk (server-side claim with a 10s safety timeout), and a per-store busy flag with an epoch counter gates patrol/confront/holdup/restock so only one behavior drives the clerk at once.</p>
+      <ul>
+        <li><strong>Greet</strong> - entering a store plays a greet line, at most once per 60s per store, unless the player is marked caught at that store.</li>
+        <li><strong>Patrol</strong> - every ~30-60s while not busy, a 30% chance to walk to the next patrol stop, play its idle anim, dwell 10-15s, then walk back.</li>
+        <li><strong>Shoplifter recognition</strong> - a player marked caught gets confronted and shoved on entry instead of greeted, up to 5 times over a visit if they don't leave.</li>
+        <li><strong>Backroom enforcement</strong> - entering the backroom triggers the same confront-and-shove flow regardless of history.</li>
+        <li><strong>Restock</strong> - queued shelf grabs are visited in one trip (not round-tripping to the counter between items), with the tier-appropriate grab anim per stop.</li>
+        <li><strong>Homing recovery</strong> - if no client was in range to run the walk-back navigation, the clerk is marked <code>needsHoming</code> and a recovery loop retries every 2s until it succeeds.</li>
+        <li><strong>Pay</strong> - available at the counter (clerk home) or directly on the clerk otherwise; settles the player's debt tab, failing cleanly on insufficient funds.</li>
+      </ul>
+
+      <h3 id="feature-register-robbery">Register robbery</h3>
+      <p>Two flows, both a 30s drip of $10-30 every 3s into the robber's account, one looter at a time per store:</p>
+      <ul>
+        <li><strong>Gunpoint ("Force Register Open")</strong> - aiming a firearm at a live clerk within 10 units opens a 15s threatened window; interacting with a register during that window (staying within 3 units, weapon equipped, for the whole drip) starts it. A dispatch alert fires 10s after the first payout. 10-minute cooldown per store after the drip ends or is interrupted.</li>
+        <li><strong>Loot dead register ("Loot Register")</strong> - only available after the clerk is killed, no weapon requirement, same drip mechanics, claimable once per death-cycle. Killing the clerk always dispatches a "Shooting" alert immediately, separate from the robbery alert; the clerk respawns after 10 minutes.</li>
+      </ul>
+
+      <h3 id="feature-dispatch">Dispatch</h3>
+      <p>Same self-registering priority pattern as the framework bridge (see Dependencies). Called for shoplifting, armed robbery, and clerk-killed events; with no bridge matched, it just prints to console instead of erroring. Cop-count reporting (used by <code>Config.RegisterRobbery.minCops</code>) is only implemented by the <code>qbx_police</code> bridge - without it, the minimum-cops gate is unenforced.</p>
+
+      <h3 id="feature-dev-tools">Dev-only tools</h3>
+      <p>Both gated behind <code>Config.Debug = false</code> by default - not meant to ship enabled:</p>
+      <ul>
+        <li><code>/calibrateshelf</code> - an in-game freecam/raycast tool to build new shelf slot layouts from scratch, exporting ready-to-paste config snippets to the F8 console. The source comments say to delete this file once a shelf's layout is finalized.</li>
+        <li><code>/n2shops_debugzones</code> - toggles wireframe drawing for every zone the resource creates. Safe to leave in for admin use, or remove for production.</li>
+      </ul>
+      <p>A third file, <code>client/blocked_props.lua</code>, is <em>not</em> debug-gated - it's the always-on <code>Config.BlockedProps</code> cleanup poll, unrelated to the two calibration/debug tools above.</p>
 
       <h2 id="commands">Commands</h2>
+      <div class="callout warn">Both commands are dev-only and no-op entirely unless <code>Config.Debug = true</code>.</div>
       <div class="cmd-list">
-        <div class="cmd-item"><code>/n2_standup</code><span>Client. Bound to <kbd>E</kbd> by default via <code>RegisterKeyMapping</code>. Attempts to stand up when knocked out, running the configured skill check unless <code>SkillCheck.Enabled</code> is false.</span></div>
-        <div class="cmd-item"><code>/n2ko</code><span>Server. Force-knocks-out the calling player. Only works with <code>Config.Debug = true</code>; otherwise the player gets an error notification. Must be run by a player, not the server console.</span></div>
+        <div class="cmd-item"><code>/calibrateshelf</code><span>Client. Opens the shelf calibration menu.</span></div>
+        <div class="cmd-item"><code>/n2shops_debugzones</code><span>Client. Toggles zone wireframe debug drawing.</span></div>
       </div>
 
       <h2 id="exports-events">Exports / Events</h2>
-      <p>No exports of its own - it only calls into n2-chat's. Net events:</p>
-      <ul>
-        <li><code>n2-knockout:client:setKnockedOut</code> - server → client, enters the knockout state.</li>
-        <li><code>n2-knockout:client:notify(msg, type)</code> - server → client, generic notification passthrough.</li>
-        <li><code>n2-knockout:server:meleeHit(attackerNetId)</code> - client → server, reports a detected melee hit; server validates distance (≤5.0 units) before counting it toward the threshold.</li>
-        <li><code>n2-knockout:server:standUpAnnounce</code> - fired as the getup animation starts; triggers the optional n2-chat announcement.</li>
-        <li><code>n2-knockout:server:standUp</code> - fired once fully stood up; clears the player's downed state.</li>
-      </ul>
-      <p>Also hooks <code>gameEventTriggered</code> (client, to detect unarmed hits), <code>onResourceStop</code> (client, cleans up effects/ragdoll if the resource stops mid-knockout), and <code>playerDropped</code> (server, clears downed state on disconnect).</p>
-
-      <h2 id="nui-locale">NUI &amp; locale</h2>
-      <p><code>html/index.html</code> is a transparent, non-interactive background page whose only job is audio playback - <code>client/sounds.lua</code> sends one-way <code>playSound</code>/<code>stopSound</code> messages, no callbacks. <code>locales/en.lua</code> holds 5 short player-facing strings; only English ships.</p>
+      <p>No exports are defined by n2-shops for other resources to call - it calls out to <code>ox_target</code>, <code>ox_inventory</code> (<code>AddItem</code>), and optionally the framework and dispatch bridges' own exports.</p>
+      <p><strong>Net events</strong> (all internal, <code>n2-shops:</code> prefixed) - client → server: <code>enteredStore</code>, <code>checkPaid</code>, <code>enteredBackroom</code>/<code>leftBackroom</code>, <code>clerkSpawned</code>, <code>threatenClerk</code>, <code>clerkKilled</code>, <code>server:stopRegisterRobbery</code>. Server → client broadcasts: <code>clerkWalkTo</code>, <code>clerkFaceHeading</code>/<code>clerkFacePoint</code>, <code>clerkPlayAnim</code>/<code>clerkStopAnim</code>, <code>clerkSpeech</code>, <code>clerkHoldUp</code>/<code>clerkHoldUpEnd</code>, <code>clerkShove</code>/<code>clerkStopShove</code>, <code>pushPlayer</code>, <code>clerkPhoneCall</code>, <code>clerkAtCounter</code>, <code>slotTaken</code>/<code>slotRestocked</code>, <code>clerkThreatened</code>, <code>clerkDied</code>/<code>clerkRespawn</code>, <code>registerRobberyEnded</code>.</p>
+      <p><strong>Callbacks</strong> (<code>lib.callback</code>): <code>getClerkNetId</code>, <code>getShelfState</code>, <code>grabShelfItem</code>, <code>getTab</code>, <code>payTab</code>, <code>isCaught</code>, <code>server:startRegisterRobbery</code>, <code>server:startLootRegister</code>.</p>
 
       <h2 id="notes">Notes</h2>
-      <div class="callout">Bridge load order is <code>qbx.lua</code> → <code>qbcore.lua</code> → <code>esx.lua</code>, each guarding against overriding an already-set framework - if multiple framework resources are somehow started, QBX wins.</div>
-      <div class="callout">Melee chip damage is actively healed back every frame outside the counted-hit flow (including a last-resort resurrect-on-death safety net). Running another damage/medical system alongside unarmed-hit handling could conflict with this.</div>
-      <div class="callout warn"><strong>Leave <code>Config.Debug</code> off in production</strong> - besides logging, it unlocks <code>/n2ko</code>, a self-knockout command available to every player.</div>
+      <div class="callout warn"><strong>Manifest dependency gap:</strong> <code>ox_lib</code>/<code>ox_target</code>/<code>ox_inventory</code> are documented as dependencies but not declared in <code>fxmanifest.lua</code> - only enforced by load order in <code>server.cfg</code>.</div>
+      <div class="callout warn"><strong><code>n2-mdt</code> dispatch bridge is undocumented:</strong> it exists in source and is the highest-priority of the three dispatch bridges, but isn't mentioned anywhere in INSTALLATION.txt.</div>
+      <div class="callout">Items are granted to inventory at the moment of grabbing, before payment - "theft" only becomes real (caught + dispatched) if the player leaves without paying. There's no way to un-grab an item.</div>
+      <div class="callout">Clerk behavior is intentionally server-decided and broadcast, not decided per-client - the project's own developer notes explicitly warn that letting a client decide clerk behavior independently would desync what different players see.</div>
+      <div class="callout">Per-store coordinate blocks (clerk, patrol, counters, registers, doors, backroom) are hand-captured for the default vanilla-map stores and have a history of copy-paste mistakes (coordinates from the wrong store, mismatched door <code>axis</code>/<code>invert</code>) - worth double-checking when customizing <code>config/stores.lua</code>.</div>
 
-      <footer>Source: <code>[Native2]/n2-knockout/</code> (fxmanifest.lua, config.lua, client/, server/, bridge/, shared/bridge.lua, locales/en.lua).</footer>
+      <footer>Source: <code>[Native2]/n2-shops/</code> (INSTALLATION.txt, CLAUDE.md, fxmanifest.lua, config/, client/, server/, bridge/).</footer>
     </article>
     <aside class="toc">
       <h3>On this page</h3>
       <ul>
-        <li><a href="#dependencies">Dependencies</a>
-        </li>
-        <li><a href="#installation">Installation</a>
-        </li>
+        <li><a href="#dependencies">Dependencies</a></li>
+        <li><a href="#installation">Installation</a></li>
         <li><a href="#configuration">Configuration</a>
+          <ul>
+            <li><a href="#config-stores-lua">config/stores.lua</a></li>
+            <li><a href="#config-shelves-lua">config/shelves.lua</a></li>
+            <li><a href="#config-shelf-offsets-lua">config/shelf_offsets.lua</a></li>
+          </ul>
         </li>
-        <li><a href="#commands">Commands</a>
+        <li><a href="#features">Features</a>
+          <ul>
+            <li><a href="#feature-store-zones">Store zones</a></li>
+            <li><a href="#feature-shelf-stocking">Shelf stocking</a></li>
+            <li><a href="#feature-clerk-ai">Clerk AI</a></li>
+            <li><a href="#feature-register-robbery">Register robbery</a></li>
+            <li><a href="#feature-dispatch">Dispatch</a></li>
+            <li><a href="#feature-dev-tools">Dev-only tools</a></li>
+          </ul>
         </li>
-        <li><a href="#exports-events">Exports / Events</a>
-        </li>
-        <li><a href="#nui-locale">NUI &amp; locale</a>
-        </li>
-        <li><a href="#notes">Notes</a>
-        </li>
+        <li><a href="#commands">Commands</a></li>
+        <li><a href="#exports-events">Exports / Events</a></li>
+        <li><a href="#notes">Notes</a></li>
       </ul>
     </aside>
     </div>
