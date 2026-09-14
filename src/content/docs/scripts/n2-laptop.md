@@ -20,8 +20,8 @@ A placeable laptop item with a full desktop UI: a browser, banking, a fake crypt
 4. Configure `config/config.lua` and `config/marketplaces.lua`.
 5. Add `ensure n2-laptop` to `server.cfg`, after `ox_lib`, `ox_target`, `ox_inventory`, and `oxmysql`.
 
-:::caution[Item name mismatch]
-`installation.txt` tells you to add an item named `usb_stick`, but `Config.Laptop.usb.item` in `config.lua` defaults to `'usb_device'`. Pick one name and make sure the item and the config key match, or USB features silently won't work.
+:::tip
+The USB item name must match `Config.Laptop.usb.item` in `config.lua` (`'usb_device'` by default) - use that exact name when adding the item to `ox_inventory`, or rename the config key to match whatever item name you use.
 :::
 
 ### Database
@@ -41,7 +41,7 @@ Everything else (placement/ownership, settings, VPN state, bookmarks, notificati
 
 | Key | Controls |
 | --- | --- |
-| `Config.Laptop` | `item` (`'laptop'`), `prop` (`prop_laptop_01a`), `openDistance` (1.5), `openControl` (38 = E), `autoLockMinutes` (10, 0 disables). Sub-tables: `usb.item` (`'usb_device'`, see mismatch warning above), `usb.maxFiles` (40); `hack.item` (`'laptop_hack_device'`), `hack.difficulty` (default `easy, easy, medium`), `hack.failCooldownMinutes` (3). |
+| `Config.Laptop` | `item` (`'laptop'`), `prop` (`prop_laptop_01a`), `openDistance` (1.5), `openControl` (38 = E), `autoLockMinutes` (10, 0 disables). Sub-tables: `usb.item` (`'usb_device'` - must match your `ox_inventory` item name, see Installation), `usb.maxFiles` (40); `hack.item` (`'laptop_hack_device'`), `hack.difficulty` (default `easy, easy, medium`), `hack.failCooldownMinutes` (3). |
 | `Config.Shop` | Electronics store: `enabled`, location/blip, `items` (laptop $350, usb $50, hack device $500), ped model/scenario. |
 | `Config.Spotibeats` | `playlists = {}` - empty by default, entries take a YouTube video id. |
 | `Config.Mail` | `templates[]`: id, sender, subject, body, and an optional `scam { amount, payLabel, successBody }`. Ships 4 scam templates (prize, fake job, fake invoice, fake warranty) and 1 harmless newsletter. |
@@ -116,14 +116,6 @@ Not the player. Losing, selling, or having it stolen loses Whispr history, SellH
 
 :::note
 Money handling differs by framework: ESX keeps bank/cash in named accounts, QBCore/QBX use `PlayerData.money`. `server/framework.lua` abstracts this - any custom money logic added later needs to follow the same branch.
-:::
-
-:::note
-The hacking minigame's pass/fail result is entirely client-trusted; the server only enforces item consumption and a per-laptop cooldown after a failure, so it can't be reduced to "buy enough devices and spam it," but it also isn't server-verified.
-:::
-
-:::note
-Two currency-rate tables (`client/main.lua` and `server/market.lua`) are separately hardcoded and must be kept in sync by hand - there's no shared config for them. Cryptex's name/ticker/launder-fee are similarly duplicated between `client/main.lua`'s NUI payload and a raw constant in `server/cryptex.lua`.
 :::
 
 Source: `[Native2]/n2-laptop/` (installation.txt, fxmanifest.lua, config/, client/, server/, n2-laptop.sql).

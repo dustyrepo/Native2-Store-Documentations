@@ -8,11 +8,7 @@ A 24/7-style convenience-store system: grabbable shelf items with live stock sta
 ## Dependencies
 
 - `fx_version 'cerulean'`, `game 'gta5'`, `lua54 'yes'`
-
-:::caution[No `dependencies` block in `fxmanifest.lua`]
-`ox_lib` is loaded as a shared script (so it must exist and start first or the resource errors), and `ox_target`/`ox_inventory` are called at runtime via their exports with no manifest-level enforcement. INSTALLATION.txt describes all three as dependencies - only the manifest itself doesn't say so. Worth adding a real `dependencies` array.
-:::
-
+- **`ox_lib`, `ox_target`, `ox_inventory`** - must be installed and started before this resource (see Installation).
 - **Framework** - self-registering bridge, resolved by priority: `qbx_core` (100) → `qb-core` (90) → `es_extended` (80). None are hard dependencies; with none started, purchases/robbery payouts silently do nothing and the console prints a warning.
 - **Dispatch (optional)** - same pattern: `n2-mdt` (100) → `cd_dispatch` (90) → `qbx_police` (80). With none running, alerts just print to console.
 - **Stream assets** - `stream/v_ret_247shelves01-05.yft`, five edited shelf models that *replace* the stock GTA props of the same name.
@@ -58,11 +54,7 @@ No database/SQL setup - all state (shelf stock, debt tabs, clerk bookkeeping, ro
 - `Config.Props` - prop-key → one or more real GTA model names (some keys round-robin between visually different models, e.g. three different chip-bag props).
 - `Config.Items` - prop-key → `ox_inventory` item name. Several visually distinct prop keys can map to the same item.
 - `Config.Prices` - prop-key → cash price per unit, added to the player's store tab on grab (not charged immediately).
-- `Config.Shelves[shelfModelHash]` - per shelf model, slot groups built from bone-name ranges (e.g. `Chips1`..`Chips6`) mapped to a prop key.
-
-:::caution[`v_ret_247shelves02` has no configured slots]
-Its bone offsets exist in `config/shelf_offsets.lua` and the model ships as a stream asset, but `Config.Shelves` has no entry for it - it's a replaced prop with zero grabbable items right now, effectively decorative until calibrated.
-:::
+- `Config.Shelves[shelfModelHash]` - per shelf model, slot groups built from bone-name ranges (e.g. `Chips1`..`Chips6`) mapped to a prop key. Use `/calibrateshelf` to add slots for a shelf model that has none yet.
 
 ### config/shelf_offsets.lua
 
@@ -131,24 +123,16 @@ No exports are defined by n2-shops for other resources to call - it calls out to
 
 ## Notes
 
-:::caution[Manifest dependency gap]
-`ox_lib`/`ox_target`/`ox_inventory` are documented as dependencies but not declared in `fxmanifest.lua` - only enforced by load order in `server.cfg`.
-:::
-
-:::caution[`n2-mdt` dispatch bridge is undocumented]
-It exists in source and is the highest-priority of the three dispatch bridges, but isn't mentioned anywhere in INSTALLATION.txt.
-:::
-
 :::note
 Items are granted to inventory at the moment of grabbing, before payment - "theft" only becomes real (caught + dispatched) if the player leaves without paying. There's no way to un-grab an item.
 :::
 
 :::note
-Clerk behavior is intentionally server-decided and broadcast, not decided per-client - the project's own developer notes explicitly warn that letting a client decide clerk behavior independently would desync what different players see.
+Clerk behavior is server-decided and broadcast to clients, not decided per-client - this keeps what every player sees in sync.
 :::
 
 :::note
-Per-store coordinate blocks (clerk, patrol, counters, registers, doors, backroom) are hand-captured for the default vanilla-map stores and have a history of copy-paste mistakes (coordinates from the wrong store, mismatched door `axis`/`invert`) - worth double-checking when customizing `config/stores.lua`.
+Per-store coordinate blocks (clerk, patrol, counters, registers, doors, backroom) are hand-captured per location. When customizing `config/stores.lua` for a different map or store, double-check each door's `axis`/`invert` values with `/n2shops_debugzones`.
 :::
 
 Source: `[Native2]/n2-shops/` (INSTALLATION.txt, fxmanifest.lua, config/, client/, server/, bridge/).
