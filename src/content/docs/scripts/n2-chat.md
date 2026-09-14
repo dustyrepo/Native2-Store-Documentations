@@ -5,10 +5,6 @@ description: Setup and full config reference for n2-chat, a standalone FiveM cha
 
 A standalone, SA-MP-style chat replacement: floating proximity text, a full set of RP commands, persistent world-placed roleplay notes, per-player languages, moderation, and a phone-call relay. Ships its own NUI and a `RegisterCommand`/export API other resources hook into.
 
-:::tip
-This resource ships an unusually complete `README.md` in its own folder - treat this page as the fast-reference version and the README as the exhaustive one (it includes the full 30+ command table and troubleshooting guide verbatim).
-:::
-
 ## Dependencies
 
 - `fx_version 'cerulean'`, `game 'gta5'`, `lua54 'yes'`
@@ -97,7 +93,7 @@ Every user-facing string is keyed in `locale.lua` (English, default). A German s
 
 ## Commands
 
-30+ commands total (full table in the README); the ones you'll actually configure around:
+30+ commands total; the ones you'll actually configure around:
 
 | Commands | Description |
 | --- | --- |
@@ -135,7 +131,7 @@ Relays `/say`, `/shout`, and `/low` lines to the sender's active call partner (t
 ## Notes
 
 :::caution[Load order]
-A resource that registers commands through n2-chat's export must start *after* n2-chat (`dependencies { 'n2-chat' }` in its own manifest). This is the #1 troubleshooting item in the README.
+A resource that registers commands through n2-chat's export must start *after* n2-chat (`dependencies { 'n2-chat' }` in its own manifest), or command registration silently fails.
 :::
 
 :::note
@@ -150,4 +146,4 @@ Discord's `chat` webhook category includes private messages - worth flagging to 
 Distance intensity, language unintelligibility, and speech distortion only apply to proximity messages, never to targeted ones (`/w`, `/pm`, `/cw`, `/r`).
 :::
 
-Source: `[Native2]/n2-chat/` (README.md, fxmanifest.lua, client/, server/, config/, shared/utils.lua).
+Source: `[Native2]/n2-chat/` (fxmanifest.lua, client/, server/, config/, shared/utils.lua).

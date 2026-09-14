@@ -10,7 +10,7 @@ A 24/7-style convenience-store system: grabbable shelf items with live stock sta
 - `fx_version 'cerulean'`, `game 'gta5'`, `lua54 'yes'`
 
 :::caution[No `dependencies` block in `fxmanifest.lua`]
-`ox_lib` is loaded as a shared script (so it must exist and start first or the resource errors), and `ox_target`/`ox_inventory` are called at runtime via their exports with no manifest-level enforcement. INSTALLATION.txt and the project's own CLAUDE.md both describe these as dependencies - only the manifest itself doesn't say so. Worth adding a real `dependencies` array.
+`ox_lib` is loaded as a shared script (so it must exist and start first or the resource errors), and `ox_target`/`ox_inventory` are called at runtime via their exports with no manifest-level enforcement. INSTALLATION.txt describes all three as dependencies - only the manifest itself doesn't say so. Worth adding a real `dependencies` array.
 :::
 
 - **Framework** - self-registering bridge, resolved by priority: `qbx_core` (100) → `qb-core` (90) → `es_extended` (80). None are hard dependencies; with none started, purchases/robbery payouts silently do nothing and the console prints a warning.
@@ -151,4 +151,4 @@ Clerk behavior is intentionally server-decided and broadcast, not decided per-cl
 Per-store coordinate blocks (clerk, patrol, counters, registers, doors, backroom) are hand-captured for the default vanilla-map stores and have a history of copy-paste mistakes (coordinates from the wrong store, mismatched door `axis`/`invert`) - worth double-checking when customizing `config/stores.lua`.
 :::
 
-Source: `[Native2]/n2-shops/` (INSTALLATION.txt, CLAUDE.md, fxmanifest.lua, config/, client/, server/, bridge/).
+Source: `[Native2]/n2-shops/` (INSTALLATION.txt, fxmanifest.lua, config/, client/, server/, bridge/).
