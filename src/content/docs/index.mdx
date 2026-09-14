@@ -1,0 +1,57 @@
+---
+title: N2 Docs
+description: Installation, configuration, commands, and exports for n2-recoil, n2-knockout, n2-chat, n2-laptop, and n2-shops - the Native2 FiveM resource pack.
+tableOfContents: false
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+export const base = import.meta.env.BASE_URL;
+
+Installation, configuration, commands, and exports for the five Native2 FiveM resources. Every value on this site is read directly from the resource source, not guessed.
+
+{/* Links inside Starlight component children (unlike plain page-body
+    Markdown) don't get Astro's automatic base-path rewriting, so they're
+    built from `base` by hand here - a `[text](/path/)` link in this exact
+    spot silently pointed at the wrong URL under the GitHub Pages base
+    path until this was caught. */}
+
+<CardGrid>
+	<Card title="n2-recoil">
+		Per-weapon, per-category recoil control with job-based multipliers and aim sway. Client-only, no dependencies.
+
+		<a href={`${base.replace(/\/$/, '')}/scripts/n2-recoil/`}>n2-recoil docs</a>
+	</Card>
+	<Card title="n2-knockout">
+		Melee knockout and downed system with skill-check recovery, impairment effects, and a lingering headache.
+
+		<a href={`${base.replace(/\/$/, '')}/scripts/n2-knockout/`}>n2-knockout docs</a>
+	</Card>
+	<Card title="n2-chat">
+		Full chat replacement: RP commands, scene markers, languages, moderation, and a phone-call relay.
+
+		<a href={`${base.replace(/\/$/, '')}/scripts/n2-chat/`}>n2-chat docs</a>
+	</Card>
+	<Card title="n2-laptop">
+		Placeable laptop item with a full desktop UI: banking, crypto, mail, marketplaces, resale, and USB storage.
+
+		<a href={`${base.replace(/\/$/, '')}/scripts/n2-laptop/`}>n2-laptop docs</a>
+	</Card>
+	<Card title="n2-shops">
+		Convenience-store system: shelf stocking, a clerk AI that patrols and remembers shoplifters, and register robbery.
+
+		<a href={`${base.replace(/\/$/, '')}/scripts/n2-shops/`}>n2-shops docs</a>
+	</Card>
+</CardGrid>
+
+## How this site is organized
+
+Each script has its own page with the same structure, in the order you'll actually need it:
+
+- **Dependencies** - what has to be installed and started first.
+- **Installation** - the exact steps to get it running.
+- **Configuration** - every config key, its default, and what it controls.
+- **Commands** and **Exports / Events** - what players and other resources can trigger.
+- **Notes** - gotchas and edge cases worth knowing before you rely on the script in production.
+
+Scope: n2-recoil, n2-knockout, n2-chat, n2-laptop, n2-shops.

@@ -1,0 +1,98 @@
+/* N2 Docs theme
+   ------------------------------------------------------------------
+   Subject: reference docs for a FiveM "heist economy" script pack -
+   weapon recoil, a knockout system, RP chat, a hacking/black-market
+   laptop, and a shoplifting/robbery convenience-store sim. The brand
+   moment is contraband: something valuable, slightly illicit, kept in
+   the dark. That's the actual reason for a warm gold accent on a deep
+   neutral charcoal, rather than the generic "near-black + acid-green"
+   combination this started as (a well-documented AI-dark-mode default,
+   not a choice specific to this brief).
+
+   Palette (named, so it stays a deliberate set rather than one-off
+   picks): ink #151413, panel #1e1c1a, line #35302a, paper #f2ede4,
+   ash #8f8779, gold #d69a3c. One accent, spent on links, the active
+   nav item, and inline code - never as decoration or a full-card wash.
+   ------------------------------------------------------------------ */
+
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-sans/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/600.css';
+
+:root,
+:root[data-theme='light'] {
+	/* Dark-only site: the light-mode block duplicates the dark values,
+	   not a real light palette. See EmptyComponent.astro - the toggle is
+	   removed, but Starlight's theme-detection script still runs and can
+	   still set data-theme="light" from the visitor's OS preference
+	   before that script even reads our override, so both selectors
+	   must resolve to the same colors. */
+	--sl-color-white: #f2ede4;
+	--sl-color-gray-1: #d8d0c2;
+	--sl-color-gray-2: #c9c0b2;
+	--sl-color-gray-3: #a89f8f;
+	--sl-color-gray-4: #6f675a;
+	--sl-color-gray-5: #35302a;
+	--sl-color-gray-6: #211e1a;
+	--sl-color-gray-7: #1a1815;
+	--sl-color-black: #151413;
+
+	--sl-color-accent-low: #3a2a10;
+	--sl-color-accent: #d69a3c;
+	--sl-color-accent-high: #f0cf94;
+
+	--sl-color-text: var(--sl-color-gray-2);
+	--sl-color-text-accent: var(--sl-color-accent);
+	--sl-color-text-invert: #241a08;
+	--sl-color-bg: var(--sl-color-black);
+	--sl-color-bg-nav: #1a1815;
+	--sl-color-bg-sidebar: #1a1815;
+	--sl-color-bg-inline-code: #100f0d;
+	--sl-color-bg-accent: var(--sl-color-accent);
+	--sl-color-hairline-light: #4a4238;
+	--sl-color-hairline: var(--sl-color-gray-6);
+	--sl-color-hairline-shade: var(--sl-color-black);
+
+	--sl-color-red: #e2685a;
+	--sl-color-red-high: #f3bcb4;
+	--sl-color-red-low: #2e1512;
+
+	--sl-font: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	--sl-font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+/* Inline code reads as a muted gold, not plain white - a quiet echo of
+   the accent instead of a flat monochrome string of text. */
+code {
+	color: #e0b671;
+}
+pre code {
+	color: inherit;
+}
+
+/* Headings carry more of the hierarchy themselves (tighter tracking,
+   a firmer weight) instead of leaning on size and default browser
+   spacing alone. custom.css is already a plain global stylesheet, not
+   an Astro scoped <style> block, so no :global() wrapper is needed. */
+h1 {
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+h2,
+h3 {
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+/* Starlight's sidebar current-page indicator and inline links already
+   inherit the accent above; the only thing worth tuning by hand is
+   making the active sidebar link's background a quiet accent tint
+   instead of the flat neutral gray Starlight uses for every hover
+   state, so "you are here" reads instantly while scanning the tree. */
+a[aria-current='page'] {
+	background-color: var(--sl-color-accent-low);
+}
