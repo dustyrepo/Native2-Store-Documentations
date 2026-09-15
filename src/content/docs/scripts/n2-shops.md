@@ -9,7 +9,7 @@ A 24/7-style convenience-store system: grabbable shelf items with live stock sta
 
 - `fx_version 'cerulean'`, `game 'gta5'`, `lua54 'yes'`
 - **`ox_lib`, `ox_target`, `ox_inventory`** - must be installed and started before this resource (see Installation).
-- **Framework** - self-registering bridge, resolved by priority: `qbx_core` (100) → `qb-core` (90) → `es_extended` (80). None are hard dependencies; with none started, purchases/robbery payouts silently do nothing and the console prints a warning.
+- **Framework** - self-registering bridge, resolved by priority: `qbx_core` (100) → `qb-core` (90) → `es_extended` (80). None are hard dependencies; with none started, purchases/robbery payouts silently do nothing and the console prints a warning. Each framework bridge also reports on-duty police count (used by `Config.RegisterRobbery.minCops`) - QBX via `qbx_core`'s duty export, QBCore via `QBCore.Functions.GetDutyCount`, ESX by counting on-duty `police` job players directly.
 - **Dispatch (optional)** - same pattern: `n2-mdt` (100) → `cd_dispatch` (90) → `qbx_police` (80). With none running, alerts just print to console.
 - **Stream assets** - `stream/v_ret_247shelves01-05.yft`, five edited shelf models that *replace* the stock GTA props of the same name.
 
@@ -33,11 +33,13 @@ No database/SQL setup - all state (shelf stock, debt tabs, clerk bookkeeping, ro
 
 | Key | Default | Controls |
 | --- | --- | --- |
-| `Config.Debug` | `false` | Gates `/calibrateshelf` and `/n2shops_debugzones`. Leave off in production. |
+| `Config.Debug` | `false` | Gates `/calibrateshelf`, `/createshop`, and `/n2shops_debugzones`. Leave off in production. |
 | `Config.BlockedProps` | e.g. `v_ret_247_fruit` | Model names deleted on sight anywhere in the world (1s poll) - stock clutter that clips through the custom shelves. |
+| `Config.Blips.enabled` | `true` | Shows a map blip per store, placed at the clerk's coordinates and labeled with the store name. |
+| `Config.Blips.sprite` / `color` / `scale` | `52` / `2` / `0.8` | Standard GTA blip sprite ID, color index, and scale for the store blips. |
 | `Config.CaughtMemory.mode` | `'resource'` | `'resource'` (cleared on resource/server restart), `'timed'` (persists via framework metadata, expires after `duration` minutes), `'never'` (persists forever). |
 | `Config.CaughtMemory.duration` | - | Minutes before `'timed'`-mode caught memory expires; ignored for the other modes. |
-| `Config.RegisterRobbery.minCops` | `0` | Minimum on-duty cops required before a robbery can start. Unenforced at `0` unless a dispatch bridge reports a real count. |
+| `Config.RegisterRobbery.minCops` | `0` | Minimum on-duty cops required before a robbery can start, sourced from the active framework bridge's duty count. `0` means unenforced. |
 | `Config.RegisterRobbery.threatWindow` | `15000` ms | How long "Force Register Open" stays available after aiming at the clerk. |
 | `Config.RegisterRobbery.ticks` / `tickInterval` | `10` / `3000` ms | 10 payouts every 3s = 30s full drain. |
 | `Config.RegisterRobbery.cashMin` / `cashMax` | `10` / `30` | Cash per drip. |
@@ -51,10 +53,9 @@ No database/SQL setup - all state (shelf stock, debt tabs, clerk bookkeeping, ro
 
 - `Config.GrabAnims` - `high`/`mid`/`low` anim dict+clip, matched to a shelf slot's height tier.
 - `Config.Restock.animDuration` (`3000` ms) - how long the clerk's restock animation plays per item.
-- `Config.Props` - prop-key → one or more real GTA model names (some keys round-robin between visually different models, e.g. three different chip-bag props).
-- `Config.Items` - prop-key → `ox_inventory` item name. Several visually distinct prop keys can map to the same item.
-- `Config.Prices` - prop-key → cash price per unit, added to the player's store tab on grab (not charged immediately).
-- `Config.Shelves[shelfModelHash]` - per shelf model, slot groups built from bone-name ranges (e.g. `Chips1`..`Chips6`) mapped to a prop key. Use `/calibrateshelf` to add slots for a shelf model that has none yet.
+- `Config.ShelfProps.rotationJitterDeg` (`360`) - each spawned prop gets a random rotation within this range for a less uniform look on the shelf. Set a product's `rotate = false` (e.g. packaged/boxed items like `sodaPack`, `chips`, `bread`) to keep it upright instead.
+- Products are defined once each, keyed by prop-key, with `prop` (one or more real GTA model names), `item` (the `ox_inventory` item it grants), `price` (added to the player's store tab on grab, not charged immediately), and optional `rotate`. `Config.Props`, `Config.Items`, and `Config.Prices` are all generated from this one table, so adding a product only means adding one entry, not three.
+- `Config.Shelves[shelfModelHash]` - per shelf model, an array of `slot(productKey, bonePrefix, count)` calls, each expanding to `count` numbered bones (`bonePrefix .. 1`, `bonePrefix .. 2`, ...) mapped to that product. Use `/calibrateshelf` to add slots for a shelf model that has none yet - it prints the exact `slot(...)` line to paste in.
 
 ### config/shelf_offsets.lua
 
@@ -66,9 +67,11 @@ No database/SQL setup - all state (shelf stock, debt tabs, clerk bookkeeping, ro
 
 Each store's `doors` array drives shoplifting-exit detection, deliberately **not** built on ox_lib's shared zone poller (its 300ms sample rate is too slow for a player sprinting across a ~1.5-unit doorway). Instead every door runs its own per-frame check within 15 units, falling back to a 1s poll otherwise. Crossing inward fires `enteredStore`; crossing outward fires `checkPaid`, which resolves to a "thanks, bye" or a caught-shoplifting reaction depending on unpaid debt. A door's inside/outside side is computed from local X or Y after de-rotating by heading, with an optional `invert` flag - both hand-captured and verified in-game via `/n2shops_debugzones`. Backroom zones are plain ox_lib box/poly zones (room-sized, no thin-doorway timing issue).
 
+A map blip per store (`Config.Blips`) is placed at the clerk's coordinates and labeled with the store name, so players can find their nearest 24/7 without needing to already know where one is.
+
 ### Shelf stocking / grabbing
 
-The client polls the world every 1s for shelf props and "stocks" them: spawns one prop per configured slot (skipping slots the server already reports taken), attached via bone offset, frozen/invincible/collidable so the engine doesn't reclaim it as disposable population. Each prop becomes an ox_target "Take X" option; selecting it opens a quantity dialog, then requests a grab per unit (rate-limited 300ms/grab). The server validates the slot, adds the item to inventory **immediately on grab** (not on payment), marks the slot taken for every client, adds the price to that player's per-store debt tab, and queues a restock. Debt is only settled at the counter or forced at the door on exit - walking out with unpaid debt clears it silently but marks the player caught and dispatches a "Shoplifting" alert. Grabbed items stay in inventory even if caught. Restocks for a whole visit are batched and queued 5s after the player leaves or pays, not per-grab.
+The client polls the world every 1s for shelf props and "stocks" them: spawns one prop per configured slot (skipping slots the server already reports taken), attached via bone offset with a random cosmetic rotation jitter, frozen/invincible/collidable so the engine doesn't reclaim it as disposable population. Each prop becomes an ox_target "Take X" option; selecting it opens a quantity dialog, then requests a grab per unit (rate-limited 300ms/grab). The server validates the slot, adds the item to inventory **immediately on grab** (not on payment), marks the slot taken for every client, adds the price to that player's per-store debt tab, and queues a restock. The shelf itself also carries a "Put Back Item" option that reverses the most recent grab from that shelf: removes the item from inventory, frees the slot again for every client, and refunds the price from the player's debt tab. Debt is only settled at the counter or forced at the door on exit - walking out with unpaid debt clears it silently but marks the player caught and dispatches a "Shoplifting" alert. Restocks for a whole visit are batched and queued 5s after the player leaves or pays, not per-grab.
 
 ### Clerk AI
 
@@ -91,13 +94,14 @@ Two flows, both a 30s drip of $10-30 every 3s into the robber's account, one loo
 
 ### Dispatch
 
-Same self-registering priority pattern as the framework bridge (see Dependencies). Called for shoplifting, armed robbery, and clerk-killed events; with no bridge matched, it just prints to console instead of erroring. Cop-count reporting (used by `Config.RegisterRobbery.minCops`) is only implemented by the `qbx_police` bridge - without it, the minimum-cops gate is unenforced.
+Same self-registering priority pattern as the framework bridge (see Dependencies). Called for shoplifting, armed robbery, and clerk-killed events; with no bridge matched, it just prints to console instead of erroring. On-duty cop count for `Config.RegisterRobbery.minCops` comes from the framework bridge (ESX, QBCore, and QBX all report it), not from the dispatch bridge.
 
 ### Dev-only tools
 
-Both gated behind `Config.Debug = false` by default - not meant to ship enabled:
+All gated behind `Config.Debug = false` by default - not meant to ship enabled:
 
 - `/calibrateshelf` - an in-game freecam/raycast tool to build new shelf slot layouts from scratch, exporting ready-to-paste config snippets to the F8 console. The source comments say to delete this file once a shelf's layout is finalized.
+- `/createshop` - builds a whole `Config.Stores` entry in-game: walk to a spot and select "Set Clerk Position" or "Add Patrol Point" to capture it, or use the same corner-to-corner freecam flow as `/calibrateshelf` to place counters, registers, doors, and the backroom. Exports a ready-to-paste `Config.Stores` block to the F8 console.
 - `/n2shops_debugzones` - toggles wireframe drawing for every zone the resource creates. Safe to leave in for admin use, or remove for production.
 
 A third file, `client/blocked_props.lua`, is *not* debug-gated - it's the always-on `Config.BlockedProps` cleanup poll, unrelated to the two calibration/debug tools above.
@@ -105,12 +109,13 @@ A third file, `client/blocked_props.lua`, is *not* debug-gated - it's the always
 ## Commands
 
 :::caution
-Both commands are dev-only and no-op entirely unless `Config.Debug = true`.
+All three commands are dev-only and no-op entirely unless `Config.Debug = true`.
 :::
 
 | Command | Description |
 | --- | --- |
 | `/calibrateshelf` | Client. Opens the shelf calibration menu. |
+| `/createshop` | Client. Opens the shop creator menu. |
 | `/n2shops_debugzones` | Client. Toggles zone wireframe debug drawing. |
 
 ## Exports / Events
@@ -119,12 +124,12 @@ No exports are defined by n2-shops for other resources to call - it calls out to
 
 **Net events** (all internal, `n2-shops:` prefixed) - client → server: `enteredStore`, `checkPaid`, `enteredBackroom`/`leftBackroom`, `clerkSpawned`, `threatenClerk`, `clerkKilled`, `server:stopRegisterRobbery`. Server → client broadcasts: `clerkWalkTo`, `clerkFaceHeading`/`clerkFacePoint`, `clerkPlayAnim`/`clerkStopAnim`, `clerkSpeech`, `clerkHoldUp`/`clerkHoldUpEnd`, `clerkShove`/`clerkStopShove`, `pushPlayer`, `clerkPhoneCall`, `clerkAtCounter`, `slotTaken`/`slotRestocked`, `clerkThreatened`, `clerkDied`/`clerkRespawn`, `registerRobberyEnded`.
 
-**Callbacks** (`lib.callback`): `getClerkNetId`, `getShelfState`, `grabShelfItem`, `getTab`, `payTab`, `isCaught`, `server:startRegisterRobbery`, `server:startLootRegister`.
+**Callbacks** (`lib.callback`): `getClerkNetId`, `getShelfState`, `grabShelfItem`, `putBackShelfItem`, `getTab`, `payTab`, `isCaught`, `server:startRegisterRobbery`, `server:startLootRegister`.
 
 ## Notes
 
 :::note
-Items are granted to inventory at the moment of grabbing, before payment - "theft" only becomes real (caught + dispatched) if the player leaves without paying. There's no way to un-grab an item.
+Items are granted to inventory at the moment of grabbing, before payment - "theft" only becomes real (caught + dispatched) if the player leaves without paying. A grab can be undone with the shelf's "Put Back Item" option (refunds the debt), but only for the most recent grab from that shelf while it's still marked taken.
 :::
 
 :::note
